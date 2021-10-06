@@ -33,7 +33,7 @@ public class PeopleDao {
     public void add(Person person){
         jdbcTemplate.update("INSERT INTO People VALUES (?, ?, ?, ?, ?, ?, ?)",
                 person.getName(), person.getSurname(), person.getLogin(), person.getPassword()
-                , person.getInformation(), new java.util.Date(person.getBirthday().getTime()), person.getAddress());
+                , person.getInformation(), person.getBirthday(), person.getAddress());
     }
 
     public void update(String login, Person newPerson) {
