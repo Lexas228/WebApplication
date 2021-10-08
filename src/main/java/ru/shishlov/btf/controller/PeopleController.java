@@ -1,6 +1,7 @@
 package ru.shishlov.btf.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +10,7 @@ import ru.shishlov.btf.model.Person;
 import ru.shishlov.btf.services.PeopleService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/people")
@@ -21,13 +23,17 @@ public class PeopleController {
         this.peopleService = peopleService;
     }
 
-
-    @GetMapping()
-    public String home(Model model){
-        model.addAttribute("people", peopleService.getAll());
-        return "people/home";
+    @GetMapping("/home")
+    public String homeRedirection(Principal principal){
+        return "redirect:"+ principal.getName();
     }
 
+    @GetMapping()
+    public String all(Model model){
+        model.addAttribute("people", peopleService.getAll());
+        return "people/all";
+    }
+    @PreAuthorize("#login.equals(principal.username)")
     @GetMapping("/{login}/edit")
     public String edit(Model model, @PathVariable("login") String login) {
         model.addAttribute("person", peopleService.findByLogin(login));
@@ -40,13 +46,13 @@ public class PeopleController {
         return "people/information";
     }
 
-    @PostMapping()
+    @PostMapping("/new")
     public String create(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "people/new";
         }
         peopleService.save(person);
-        return "redirect:/people";
+        return "redirect:/people/"+person.getLogin();
     }
 
     @GetMapping("/new")
@@ -63,13 +69,14 @@ public class PeopleController {
         }
 
         peopleService.update(person, login);
-        return "redirect:/people";
+        return "people/all";
     }
 
+    @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/delete")
     public String delete(@PathVariable("login") String login) {
         peopleService.delete(login);
-        return "redirect:/people";
+        return "people/all";
     }
 
 

@@ -1,65 +1,54 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Information</title>
-    <style>
-        body {
-            font-size: 21px;
-            padding: 15px;
-            margin: 15px;
-        }
-        .ui-button{
-            height: 40px;
-            width: 75px;
-        }
-    </style>
-
-    </head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+</head>
 <body>
-<table class="key-value-table">
-    <caption>All information.</caption>
-    <tbody>
-    <tr>
-        <th>Name:</th>
-        <td th:text="${person.getName()}"></td>
-    </tr>
-    <tr>
-        <th>Surname:</th>
-        <td th:text="${person.getSurname()}"></td>
-    </tr>
-    <tr>
-        <th>Login:</th>
-        <td th:text="${person.getLogin()}"></td>
-    </tr>
-    <tr>
-        <th>Information:</th>
-        <td th:text="${person.getInformation()}"></td>
-    </tr>
-    <tr>
-        <th>Address:</th>
-        <td th:text="${person.getAddress()}"></td>
-    </tr>
+<div class="container">
+    <h1>Hello <span th:text="${#authentication.name}"></span>! It's your page</h1>
+    <table class="table table-borderless table-centralised">
+        <tbody>
+        <tr>
+            <th>Name:</th>
+            <td th:text="${person.getName()}"></td>
+        </tr>
+        <tr>
+            <th>Surname:</th>
+            <td th:text="${person.getSurname()}"></td>
+        </tr>
+        <tr>
+            <th>Login:</th>
+            <td th:text="${person.getLogin()}"></td>
+        </tr>
+        <tr>
+            <th>Information:</th>
+            <td th:text="${person.getInformation()}"></td>
+        </tr>
+        <tr>
+            <th>Address:</th>
+            <td th:text="${person.getAddress()}"></td>
+        </tr>
 
-    <tr>
-        <th>Birthday:</th>
-        <td th:text="${person.getBirthday()}"></td>
-    </tr>
-    </tbody>
-</table>
-<hr>
-
-<form th:method="GET" th:action="@{/people/{login}/edit(login=${person.getLogin()})}">
-    <input type="submit" value="Edit" class="ui-button"/>
-</form>
-
-<form th:method="POST" th:action="@{/people/{login}/delete(login=${person.getLogin()})}">
-    <input type="submit" value="Delete" class="ui-button"/>
-</form>
-
-<form th:method="GET" th:action="@{/people}">
-    <input type="submit" value="Back" class="ui-button"/>
-</form>
+        <tr>
+            <th>Birthday:</th>
+            <td th:text="${person.getBirthday()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:method="GET" th:action="@{/people/{login}/edit(login=${person.getLogin()})}">
+        <button class="btn btn-primary" type="submit" value="Edit">Edit</button>
+    </form>
+    <br>
+    <form th:method="POST" th:action="@{/people/{login}/delete(login=${person.getLogin()})}">
+        <button class="btn btn-primary" type="submit" value="Delete">Delete</button>
+    </form>
+</div>
 
 </body>
 </html>

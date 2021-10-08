@@ -58,9 +58,9 @@ public class PeopleService implements UserDetailsService{
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Person person = peopleRepository.findByLogin(s);
         if(person == null){
-            throw new UsernameNotFoundException("User was not found");
+            throw new UsernameNotFoundException("User was " + s + " not found");
         }
-        return new User(person.getName(), person.getPassword(), new HashSet<>());
+        return new User(person.getLogin(), person.getPassword(), new HashSet<>());
     }
 
 
