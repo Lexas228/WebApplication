@@ -1,14 +1,10 @@
 package ru.shishlov.btf.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.shishlov.btf.model.Person;
-import java.sql.Date;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -38,8 +34,8 @@ public class PeopleDao {
 
     public void update(String login, Person newPerson) {
         jdbcTemplate.update("UPDATE People SET name=?, surname=?, password=?, information=?, birthday=?, address=?" +
-                "where login=?", newPerson.getName(), newPerson.getSurname(), newPerson.getPassword(), newPerson.getInformation(),new java.util.Date(newPerson.getBirthday().getTime())
-        , newPerson.getAddress(), login);
+                "where login=?", newPerson.getName(), newPerson.getSurname(), newPerson.getPassword(), newPerson.getInformation(),newPerson.getBirthday(),
+                newPerson.getAddress(), login);
     }
 
 

@@ -26,9 +26,9 @@
   <input type="text" th:field="*{login}" id="login" disabled/>
   <div style="color:red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Login Error</div>
   <br/>
-  <label for="password">Enter password: </label>
-  <input type="text" th:field="*{password}" id="password"/>
-  <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+  <label for="password" hidden>Enter password: </label>
+  <input type="text" th:field="*{password}" id="password" hidden/>
+  <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" hidden>Password Error</div>
   <br/>
   <label for="information">Enter some information about you: </label>
   <textarea th:field="*{information}" id="information"></textarea>
