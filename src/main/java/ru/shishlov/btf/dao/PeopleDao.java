@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.shishlov.btf.model.Person;
+import ru.shishlov.btf.model.PersonInformation;
+
 import java.util.List;
 
 @Component
@@ -18,28 +20,25 @@ public class PeopleDao {
     }
 
     public Person findByLogin(final String login){
-        return jdbcTemplate.query("SELECT * FROM PEOPLE WHERE login=?",new Object[]{login},
+        return jdbcTemplate.query("SELECT * FROM people WHERE login=?",new Object[]{login},
                 new BeanPropertyRowMapper<>(Person.class)).stream().findAny().orElse(null);
     }
 
-    public List<Person> getAll(){
-        return jdbcTemplate.query("SELECT * FROM PEOPLE", new BeanPropertyRowMapper<>(Person.class));
-    }
+
+
 
     public void add(Person person){
-        jdbcTemplate.update("INSERT INTO People VALUES (?, ?, ?, ?, ?, ?, ?)",
-                person.getName(), person.getSurname(), person.getLogin(), person.getPassword()
-                , person.getInformation(), person.getBirthday(), person.getAddress());
+        jdbcTemplate.update("INSERT INTO people VALUES (?, ?)",
+                person.getLogin(), person.getPassword());
+
     }
 
-    public void update(String login, Person newPerson) {
-        jdbcTemplate.update("UPDATE People SET name=?, surname=?, password=?, information=?, birthday=?, address=?" +
-                "where login=?", newPerson.getName(), newPerson.getSurname(), newPerson.getPassword(), newPerson.getInformation(),newPerson.getBirthday(),
-                newPerson.getAddress(), login);
+    public void updatePassword(String login, String newPassword){
+        jdbcTemplate.update("UPDATE people SET password=? where login = ?", newPassword, login);
     }
 
 
     public void delete(String login){
-        jdbcTemplate.update("DELETE from People where login=?", login);
+        jdbcTemplate.update("DELETE from people where login=?", login);
     }
 }

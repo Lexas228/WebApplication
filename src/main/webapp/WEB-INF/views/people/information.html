@@ -42,38 +42,38 @@
         <tbody>
         <tr>
             <th>Name:</th>
-            <td th:text="${person.getName()}"></td>
+            <td th:text="${personInformation.getName()}"></td>
         </tr>
         <tr>
             <th>Surname:</th>
-            <td th:text="${person.getSurname()}"></td>
+            <td th:text="${personInformation.getSurname()}"></td>
         </tr>
         <tr>
             <th>Login:</th>
-            <td th:text="${person.getLogin()}"></td>
+            <td th:text="${personInformation.getLogin()}"></td>
         </tr>
         <tr>
             <th>Information:</th>
-            <td th:text="${person.getInformation()}"></td>
+            <td th:text="${personInformation.getInformation()}"></td>
         </tr>
         <tr>
             <th>Address:</th>
-            <td th:text="${person.getAddress()}"></td>
+            <td th:text="${personInformation.getAddress()}"></td>
         </tr>
 
         <tr>
             <th>Birthday:</th>
-            <td th:text="${person.getBirthday()}"></td>
+            <td th:text="${personInformation.getBirthday()}"></td>
         </tr>
         </tbody>
     </table>
-    <form th:method="GET" th:action="@{/people/{login}/edit(login=${person.getLogin()})}">
+    <form th:method="GET" th:action="@{/people/{login}/edit(login=${personInformation.getLogin()})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Edit">Edit</button>
     </form>
-    <form th:method="POST" th:action="@{/people/{login}/delete(login=${person.getLogin()})}">
+    <form th:method="POST" th:action="@{/people/{login}/delete(login=${personInformation.getLogin()})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Delete">Delete</button>
     </form>
-    <form th:method="GET" th:action="@{/people/{login}/resetPassword(login=${person.getLogin()})}">
+    <form th:method="GET" th:action="@{/people/{login}/resetPassword(login=${personInformation.getLogin()})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Reset password">Reset password</button>
     </form>
 </div>

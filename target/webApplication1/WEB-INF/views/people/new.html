@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-    <form class="form-signup" th:method="POST" th:action="@{/people/new}" th:object="${person}">
+        <form class="form-signup" th:method="POST" th:action="@{/people/new}" th:object="${personInformation}">
         <h2 class="form-signup-heading">Sign up page</h2>
         <p>
             <label for="name" class="sr-only">Username:</label>
@@ -42,20 +42,19 @@
             <input type="text" id="address" name="address" class="form-control" placeholder="Address" required>
             <div style="color:red" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Address Error</div>
         </p>
-
-        <p>
-            <label for="password" >Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
+            <form class="form-signup" th:method="POST" th:action="@{/people/new}" th:object="${person}">
+            <p>
+                <label for="password" >Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
-        </p>
-
-        <p>
-            <label for="confirmPassword">Confirm password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+            </p>
+            <p>
+                <label for="confirmPassword">Confirm password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
             <div style="color:red" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Password Error</div>
-        </p>
-
+            </p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+        </form>
     </form>
 </div>
 </body></html>

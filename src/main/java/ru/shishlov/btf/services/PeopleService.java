@@ -34,12 +34,7 @@ public class PeopleService implements UserDetailsService{
 
 
     public void save(Person person){
-        System.out.println("--------------------");
-        System.out.println("Person was created his login is: " + person.getLogin());
-        System.out.println("Password is " + person.getPassword());
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-        System.out.println("Encrypted password is " + person.getPassword());
-        System.out.println("-----------------------");
         peopleRepository.add(person);
     }
 
@@ -47,13 +42,7 @@ public class PeopleService implements UserDetailsService{
         return peopleRepository.findByLogin(login);
     }
 
-    public List<Person> getAll(){
-        return peopleRepository.getAll();
-    }
 
-    public void update(Person person, String login){
-        peopleRepository.update(login, person);
-    }
 
     public void delete(String login){
         peopleRepository.delete(login);
@@ -72,9 +61,8 @@ public class PeopleService implements UserDetailsService{
         return passwordEncoder.matches(password, person.getPassword());
     }
 
-    public void changePassword(Person person, String password){
-        person.setPassword(passwordEncoder.encode(password));
-        peopleRepository.update(person.getLogin(), person);
+    public void changePassword(String login, String password){
+        peopleRepository.updatePassword(login, passwordEncoder.encode(password));
     }
 
 
