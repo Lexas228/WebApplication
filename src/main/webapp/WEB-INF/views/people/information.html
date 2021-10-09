@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+<div class="container">
+    <h1>Hello <span th:text="${person.name}"></span>! It's your page</h1>
+    <table class="table table-borderless table-centralised">
+        <tbody>
+        <tr>
+            <th>Name:</th>
+            <td th:text="${person.getName()}"></td>
+        </tr>
+        <tr>
+            <th>Surname:</th>
+            <td th:text="${person.getSurname()}"></td>
+        </tr>
+        <tr>
+            <th>Login:</th>
+            <td th:text="${person.getLogin()}"></td>
+        </tr>
+        <tr>
+            <th>Information:</th>
+            <td th:text="${person.getInformation()}"></td>
+        </tr>
+        <tr>
+            <th>Address:</th>
+            <td th:text="${person.getAddress()}"></td>
+        </tr>
+
+        <tr>
+            <th>Birthday:</th>
+            <td th:text="${person.getBirthday()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:method="GET" th:action="@{/people/{login}/edit(login=${person.getLogin()})}">
+        <button class="btn btn-primary" type="submit" value="Edit">Edit</button>
+    </form>
+    <br>
+    <form th:method="POST" th:action="@{/people/{login}/delete(login=${person.getLogin()})}">
+        <button class="btn btn-primary" type="submit" value="Delete">Delete</button>
+    </form>
+</div>
+
+</body>
+</html>
