@@ -67,13 +67,13 @@
         </tr>
         </tbody>
     </table>
-    <form th:method="GET" th:action="@{/people/{login}/edit(login=${personInformation.getLogin()})}">
+    <form th:method="GET" th:if="${userName.equals(personInformation.getLogin())}" th:action="@{/people/{login}/edit(login=${personInformation.getLogin()})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Edit">Edit</button>
     </form>
-    <form th:method="POST" th:action="@{/people/{login}/delete(login=${personInformation.getLogin()})}">
+    <form th:method="POST" th:if="${userName.equals(personInformation.getLogin())}" th:action="@{/people/{login}/delete(login=${personInformation.getLogin()})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Delete">Delete</button>
     </form>
-    <form th:method="GET" th:action="@{/people/{login}/resetPassword(login=${personInformation.getLogin()})}">
+    <form th:method="GET" th:if="${userName.equals(personInformation.getLogin())}" th:action="@{/people/{login}/resetPassword(login=${personInformation.getLogin()})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Reset password">Reset password</button>
     </form>
 </div>

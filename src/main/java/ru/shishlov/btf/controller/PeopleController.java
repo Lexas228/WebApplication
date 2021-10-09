@@ -53,7 +53,7 @@ public class PeopleController {
             return "people/new";
         }
         peopleInformationService.update(personInformation, login);
-        return "redirect:people/home";
+        return "redirect:/people/home";
     }
 
     @PreAuthorize("#login.equals(principal.username)")
@@ -72,12 +72,13 @@ public class PeopleController {
             return "people/resetPassword";
         }
         peopleService.changePassword(password.getLogin(), password.getNewPassword());
-        return "redirect:people/home";
+        return "redirect:/people/home";
     }
 
     @GetMapping("/{login}")
-    public String showInfo(@PathVariable String login, Model model){
+    public String showInfo(@PathVariable String login, Model model, Principal principal){
         model.addAttribute("personInformation", peopleInformationService.findByLogin(login));
+        model.addAttribute("userName", principal.getName());
         return "people/information";
     }
 
@@ -104,6 +105,7 @@ public class PeopleController {
     @PostMapping("/{login}/delete")
     public String delete(@PathVariable("login") String login) {
         peopleService.delete(login);
+        peopleInformationService.delete(login);
         return "redirect:/logout";
     }
 }
