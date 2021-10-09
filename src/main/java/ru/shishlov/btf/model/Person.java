@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.Transient;
-import org.springframework.transaction.annotation.Transactional;
+import ru.shishlov.btf.validators.FieldMatch;
 import ru.shishlov.btf.validators.LoginConstraint;
-import ru.shishlov.btf.validators.PasswordMatches;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,7 +15,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@PasswordMatches
+@FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 public class Person {
     @Size(min = 2, max = 100)
     private String name;

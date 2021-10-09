@@ -5,7 +5,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import ru.shishlov.btf.model.Password;
 import ru.shishlov.btf.model.Person;
 import ru.shishlov.btf.services.PeopleService;
 
@@ -38,6 +40,27 @@ public class PeopleController {
     public String edit(Model model, @PathVariable("login") String login) {
         model.addAttribute("person", peopleService.findByLogin(login));
         return "people/edit";
+    }
+
+    @PreAuthorize("#login.equals(principal.username)")
+    @GetMapping("/{login}/resetPassword")
+    public String changingPassword(Model model, @PathVariable("login") String login) {
+        Password p = new Password();
+        p.setLogin(login);
+        model.addAttribute("password", p);
+        return "people/resetPassword";
+    }
+
+    @PreAuthorize("#password.login.equals(principal.username)")
+    @PostMapping("/{login}/resetPassword")
+    public String changePassword(@ModelAttribute("password") @Valid Password password, BindingResult result) {
+        if(result.hasErrors()){
+            System.out.println("here");
+            return "people/resetPassword";
+        }
+        Person p = peopleService.findByLogin(password.getLogin());
+        peopleService.changePassword(p, password.getNewPassword());
+        return "redirect:people/home";
     }
 
     @GetMapping("/{login}")
@@ -76,8 +99,6 @@ public class PeopleController {
     @PostMapping("/{login}/delete")
     public String delete(@PathVariable("login") String login) {
         peopleService.delete(login);
-        return "people/all";
+        return "redirect:/logout";
     }
-
-
 }

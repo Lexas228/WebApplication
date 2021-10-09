@@ -34,7 +34,12 @@ public class PeopleService implements UserDetailsService{
 
 
     public void save(Person person){
+        System.out.println("--------------------");
+        System.out.println("Person was created his login is: " + person.getLogin());
+        System.out.println("Password is " + person.getPassword());
         person.setPassword(passwordEncoder.encode(person.getPassword()));
+        System.out.println("Encrypted password is " + person.getPassword());
+        System.out.println("-----------------------");
         peopleRepository.add(person);
     }
 
@@ -61,6 +66,15 @@ public class PeopleService implements UserDetailsService{
             throw new UsernameNotFoundException("User was " + s + " not found");
         }
         return new User(person.getLogin(), person.getPassword(), new HashSet<>());
+    }
+
+    public boolean isCorrectPassword(Person person, String password){
+        return passwordEncoder.matches(password, person.getPassword());
+    }
+
+    public void changePassword(Person person, String password){
+        person.setPassword(passwordEncoder.encode(password));
+        peopleRepository.update(person.getLogin(), person);
     }
 
 
