@@ -50,7 +50,7 @@ public class PeopleController {
                          BindingResult bindingResult,
                          @PathVariable("login") String login){
         if(bindingResult.hasErrors()){
-            return "people/new";
+            return "people/edit";
         }
         peopleInformationService.update(personInformation, login);
         return "redirect:/people/home";
