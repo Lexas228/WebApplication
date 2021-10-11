@@ -39,7 +39,7 @@
 </div>
 <div class="constant-values-container">
 <ul th:each="person : ${people}">
-    <a th:href="@{/people/{login}(login=${person.getLogin()})}"><li th:text="${person.getName()} +' ' + ${person.getSurname()}"> </li></a>
+    <a th:href="@{/people/{login}(login=${person.getLogin()})}"><li th:text="${person.getPersonInformation().getName()} +' ' + ${person.getPersonInformation().getSurname()}"> </li></a>
 </ul>
 </div>
 <hr/>

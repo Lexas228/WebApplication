@@ -13,7 +13,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonInformation {
-    private String login;
+    private long personId;
+    private long id;
     @Size(min = 2, max = 100)
     private String name;
     @Size(min = 2, max = 100)

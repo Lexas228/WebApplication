@@ -16,8 +16,8 @@ public class PeopleInformationService {
         this.peopleInformationDao = peopleInformationDao;
     }
 
-    public PersonInformation findByLogin(String login){
-        return peopleInformationDao.findByLogin(login);
+    public PersonInformation findByPersonId(long id){
+        return peopleInformationDao.findByPersonId(id);
     }
 
     public Collection<PersonInformation> getAll(){
@@ -28,12 +28,12 @@ public class PeopleInformationService {
         peopleInformationDao.add(personInformation);
     }
 
-    public void update(PersonInformation personInformation, String login){
-        peopleInformationDao.update(login, personInformation);
+    public void update(PersonInformation personInformation, long personId){
+        peopleInformationDao.update(personId, personInformation);
     }
 
-    public void delete(String login){
-        peopleInformationDao.delete(login);
+    public void delete(long personId){
+        peopleInformationDao.delete(personId);
     }
 
 
