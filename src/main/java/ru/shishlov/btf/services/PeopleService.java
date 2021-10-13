@@ -1,79 +1,73 @@
 package ru.shishlov.btf.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.shishlov.btf.dao.PeopleDao;
-import ru.shishlov.btf.dao.PeopleInformationDao;
-import ru.shishlov.btf.model.Person;
-import ru.shishlov.btf.model.PersonInformation;
+import ru.shishlov.btf.components.Transformator;
+import ru.shishlov.btf.dto.PersonDto;
+import ru.shishlov.btf.dto.PersonInformationDto;
+import ru.shishlov.btf.entities.PersonEntity;
+import ru.shishlov.btf.entities.PersonInformationEntity;
+import ru.shishlov.btf.repositories.PeopleInformationRepository;
+import ru.shishlov.btf.repositories.PeopleRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 
 @Service
+@Transactional
 public class PeopleService implements UserDetailsService{
-    private final PeopleDao peopleRepository;
-    private final PeopleInformationService peopleInformationService;
+    private final PeopleRepository peopleRepository;
+    private final PeopleInformationRepository peopleInformationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Transformator transformator;
+
+
 
     @Autowired
-    public PeopleService(PeopleDao peopleRepository, PeopleInformationService peopleInformationService, PasswordEncoder passwordEncoder){
+    public PeopleService(PeopleRepository peopleRepository, PasswordEncoder passwordEncoder, PeopleInformationRepository peopleInformationRepository, Transformator transformator){
         this.peopleRepository = peopleRepository;
-        this.peopleInformationService = peopleInformationService;
         this.passwordEncoder = passwordEncoder;
+        this.peopleInformationRepository = peopleInformationRepository;
+        this.transformator = transformator;
     }
 
-    public void updateInfo(PersonInformation personInformation, String login){
-        Person p = peopleRepository.findByLogin(login);
-        if(p != null)
-        peopleInformationService.update(personInformation, p.getId());
+    public void updateInfo(PersonInformationDto personInformation, String login){
+        PersonEntity p = peopleRepository.findByLogin(login);
+        PersonInformationEntity personInformationEntity = transformator.toPersonInformationEntity(personInformation);
+        personInformationEntity.setPerson(p);
+        personInformationEntity.setId(p.getPersonInformation().getId());
+        peopleInformationRepository.save(personInformationEntity);
     }
 
-    public void save(Person person){
+    public void save(PersonDto person){
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-        long userId = peopleRepository.add(person);
-        PersonInformation pr = person.getPersonInformation();
-        pr.setPersonId(userId);
-        peopleInformationService.save(pr);
+        peopleRepository.save(transformator.toPersonEntity(person));
     }
 
-    public Collection<Person> getAll(){
-        Collection<Person> personCollection = peopleRepository.getAll();
-        personCollection.forEach(person -> {
-            person.setPersonInformation(peopleInformationService.findByPersonId(person.getId()));
-        });
-        return personCollection;
+    public Collection<PersonDto> getAll(){
+        return peopleRepository.findAll().stream().map(transformator::toPersonDto).collect(Collectors.toList());
     }
 
-    public Person findByLogin(String login){
-        Person p = peopleRepository.findByLogin(login);
-        if(p != null) {
-            PersonInformation inf = peopleInformationService.findByPersonId(p.getId());
-            p.setPersonInformation(inf);
-        }
-        return p;
+    public PersonDto findByLogin(String login){
+        return transformator.toPersonDto(peopleRepository.findByLogin(login));
     }
-
-
 
     public void delete(String login){
-        peopleRepository.delete(login);
+        peopleRepository.deleteByLogin(login);
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Person person = peopleRepository.findByLogin(s);
+        PersonEntity person = peopleRepository.findByLogin(s);
         if(person == null){
             throw new UsernameNotFoundException("User " + s + " was not found");
         }
@@ -85,12 +79,16 @@ public class PeopleService implements UserDetailsService{
     }
 
     public void changePassword(String login, String password){
-        peopleRepository.updatePassword(login, passwordEncoder.encode(password));
+        peopleRepository.updatePasswordByLogin(passwordEncoder.encode(password), login);
     }
 
     public boolean isCorrectPassword(String login, String rawPassword){
         String pass = getPasswordByLogin(login);
         return passwordEncoder.matches(rawPassword, pass);
+    }
+
+    public boolean isAvailableLogin(String login){
+        return !peopleRepository.existsByLogin(login);
     }
 
 

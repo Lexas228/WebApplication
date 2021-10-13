@@ -3,8 +3,6 @@ package ru.shishlov.btf.config;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class SpringMvcDispatcherInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
-
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[0];
@@ -12,7 +10,7 @@ public class SpringMvcDispatcherInitializer extends AbstractAnnotationConfigDisp
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{SpringConfig.class};
+        return new Class[]{SpringConfig.class, SecurityConfig.class};
     }
 
     @Override

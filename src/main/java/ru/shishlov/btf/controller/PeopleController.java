@@ -2,15 +2,13 @@ package ru.shishlov.btf.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.shishlov.btf.model.Password;
-import ru.shishlov.btf.model.Person;
-import ru.shishlov.btf.model.PersonInformation;
+import ru.shishlov.btf.dto.PasswordDto;
+import ru.shishlov.btf.dto.PersonDto;
+import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.services.PeopleService;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -18,7 +16,6 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
-
     private final PeopleService peopleService;
 
     @Autowired
@@ -44,7 +41,7 @@ public class PeopleController {
         return "people/edit";
     }
     @PostMapping("/{login}/edit")
-    public String update(@ModelAttribute("person") @Valid PersonInformation personInformation,
+    public String update(@ModelAttribute("person") @Valid PersonInformationDto personInformation,
                          BindingResult bindingResult,
                          @PathVariable("login") String login){
         if(bindingResult.hasErrors()){
@@ -57,7 +54,7 @@ public class PeopleController {
     @PreAuthorize("#login.equals(principal.username)")
     @GetMapping("/{login}/resetPassword")
     public String changingPassword(@PathVariable("login") String login,
-                                   @ModelAttribute("password") Password password, Model model) {
+                                   @ModelAttribute("password") PasswordDto password, Model model) {
 
         model.addAttribute("login", login);
         return "people/resetPassword";
@@ -65,7 +62,7 @@ public class PeopleController {
 
     @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/resetPassword")
-    public String changePassword(@ModelAttribute("password") @Valid Password password,
+    public String changePassword(@ModelAttribute("password") @Valid PasswordDto password,
                                  BindingResult result, @PathVariable String login) {
         if(!peopleService.isCorrectPassword(login, password.getUserOldPassword())){
             result.rejectValue("userOldPassword", "userOldPassword", "Old password is wrong");
@@ -86,7 +83,10 @@ public class PeopleController {
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult){
+    public String create(@ModelAttribute("person") @Valid PersonDto person, BindingResult bindingResult){
+        if(!peopleService.isAvailableLogin(person.getLogin())){
+            bindingResult.rejectValue("login", "login", "This login is busy");
+        }
         if(bindingResult.hasErrors()){
             return "people/new";
         }
@@ -95,8 +95,8 @@ public class PeopleController {
     }
 
     @GetMapping("/new")
-    public String newPerson(@ModelAttribute("person") Person person){
-        person.setPersonInformation(new PersonInformation());
+    public String newPerson(@ModelAttribute("person") PersonDto person){
+        person.setPersonInformation(new PersonInformationDto());
         return "/people/new";
     }
 

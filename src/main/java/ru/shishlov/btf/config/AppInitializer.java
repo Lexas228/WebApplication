@@ -17,4 +17,5 @@ public class AppInitializer implements WebApplicationInitializer {
         sc.addFilter("securityFilter", new DelegatingFilterProxy("springSecurityFilterChain"))
                 .addMappingForUrlPatterns(null, false, "/*");
     }
+
 }
