@@ -40,6 +40,7 @@ public class PeopleController {
         model.addAttribute("login", login);
         return "people/edit";
     }
+    @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/edit")
     public String update(@ModelAttribute("person") @Valid PersonInformationDto personInformation,
                          BindingResult bindingResult,

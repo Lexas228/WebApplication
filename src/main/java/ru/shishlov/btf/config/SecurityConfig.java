@@ -1,5 +1,6 @@
 package ru.shishlov.btf.config;
 
+import liquibase.integration.spring.SpringLiquibase;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,9 +33,18 @@ import java.util.Properties;
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = {Repostory.class, Component.class, Service.class, HomeController.class})
 @EnableJpaRepositories(basePackages = "ru.shishlov.btf.repositories")
+@PropertySource("classpath:application.properties")
 @EnableWebMvc
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PeopleService peopleService;
+    @Value("${db.driverName}")
+    private String driverName;
+    @Value("${db.url}")
+    private String url;
+    @Value("${db.userName}")
+    private String userName;
+    @Value("${db.password}")
+    private String password;
     @Autowired
     public void setPeopleService(PeopleService peopleService){
         this.peopleService = peopleService;
@@ -76,10 +86,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("456852");
+        dataSource.setDriverClassName(driverName);
+        dataSource.setUrl(url);
+        dataSource.setUsername(userName);
+        dataSource.setPassword(password);
         return dataSource;
     }
 
@@ -106,4 +116,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         transactionManager.setSessionFactory(entityManagerFactory().getObject());
         return transactionManager;
     }
+
+    @Bean
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setChangeLog("classpath:db/script.xml");
+        liquibase.setDataSource(dataSource());
+        return liquibase;
+    }
+
+
 }
