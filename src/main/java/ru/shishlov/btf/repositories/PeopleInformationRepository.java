@@ -1,10 +1,17 @@
 package ru.shishlov.btf.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 @Repository
 public interface PeopleInformationRepository extends JpaRepository<PersonInformationEntity, Long> {
     PersonInformationEntity findPersonInformationByPersonId(long id);
+
+    @Query("select p from PersonInformationEntity p where p.person.login = :login")
+    PersonInformationEntity findByPersonLogin(@Param(value="login") String login);
 
 }

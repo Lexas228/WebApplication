@@ -4,10 +4,7 @@ import liquibase.integration.spring.SpringLiquibase;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -35,6 +32,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "ru.shishlov.btf.repositories")
 @PropertySource("classpath:application.properties")
 @EnableWebMvc
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PeopleService peopleService;
     @Value("${db.driverName}")
@@ -124,6 +122,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         liquibase.setDataSource(dataSource());
         return liquibase;
     }
-
 
 }

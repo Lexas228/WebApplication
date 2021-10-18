@@ -41,11 +41,13 @@ public class PeopleService implements UserDetailsService{
     }
 
     public void updateInfo(PersonInformationDto personInformation, String login){
-        PersonEntity p = peopleRepository.findByLogin(login);
-        PersonInformationEntity personInformationEntity = transformator.toPersonInformationEntity(personInformation);
-        personInformationEntity.setPerson(p);
-        personInformationEntity.setId(p.getPersonInformation().getId());
-        peopleInformationRepository.save(personInformationEntity);
+       PersonInformationEntity old = peopleInformationRepository.findByPersonLogin(login);
+       old.setAddress(personInformation.getAddress());
+       old.setBirthday(personInformation.getBirthday());
+       old.setInformation(personInformation.getInformation());
+       old.setName(personInformation.getName());
+       old.setSurname(personInformation.getSurname());
+       peopleInformationRepository.save(old);
     }
 
     public void save(PersonDto person){

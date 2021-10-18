@@ -10,7 +10,7 @@ public class SpringMvcDispatcherInitializer extends AbstractAnnotationConfigDisp
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{SpringConfig.class, SecurityConfig.class, MethodSecurityConfig.class};
+        return new Class[]{SecurityConfig.class, SpringConfig.class, MethodSecurityConfig.class};
     }
 
     @Override
