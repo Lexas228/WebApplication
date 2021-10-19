@@ -3,8 +3,8 @@ package ru.shishlov.btf.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.NotEmpty;
 import ru.shishlov.btf.components.validators.FieldMatch;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Data
