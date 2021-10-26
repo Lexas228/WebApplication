@@ -1,13 +1,20 @@
 package ru.shishlov.btf.components;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import ru.shishlov.btf.components.images.ImageConvertor;
 import ru.shishlov.btf.dto.PersonDto;
 import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 
+
 @Component
 public class Transformator {
+    private final ImageConvertor imageConvertor;
+    public Transformator(@Qualifier(value = "imageConvertorFS") ImageConvertor imageConvertor){
+        this.imageConvertor = imageConvertor;
+    }
     public PersonEntity toPersonEntity(PersonDto personDto){
         PersonEntity personEntity = null;
         if(personDto != null) {
@@ -41,6 +48,7 @@ public class Transformator {
             personInformationDto.setInformation(personInformationEntity.getInformation());
             personInformationDto.setAddress(personInformationEntity.getAddress());
             personInformationDto.setBirthday(personInformationEntity.getBirthday());
+            personInformationDto.setImage(imageConvertor.toImageDto(personInformationEntity.getImage()));
         }
         return personInformationDto;
     }
@@ -57,4 +65,5 @@ public class Transformator {
         }
         return personInformationEntity;
     }
+
 }

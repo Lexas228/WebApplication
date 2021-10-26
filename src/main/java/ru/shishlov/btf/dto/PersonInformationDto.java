@@ -1,6 +1,7 @@
 package ru.shishlov.btf.dto;
 
 import lombok.Data;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -25,4 +26,10 @@ public class PersonInformationDto {
 
     @Size(min = 2, max = 100)
     private String address;
+
+    private ImageDto image;
+
+    public String generateBase64Image(){
+        return Base64.encodeBase64String(image.getBytes());
+    }
 }

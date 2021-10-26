@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container">
-<form th:method="POST" th:action="@{/people/{login}/edit(login=${login})}" th:object="${personInformation}">
+<form th:method="POST" th:action="@{/people/{login}/edit(login=${login})}" th:object="${personInformation}" enctype="multipart/form-data">
   <h2> Your login is: <span th:text="${login}"></span></h2>
   <label for="name">Enter name: </label>
   <input type="text" th:field="*{name}" id="name" class="form-control"/>
@@ -29,6 +29,8 @@
   <input type="text" th:field="*{address}" id="address" class="form-control"/>
   <div style="color:red" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Address Error</div>
   <br/>
+  <label for="image">Your image:</label>
+  <input type="file" id="image" class="form-control" th:field="*{image.file}" accept="image/png, image/jpeg" multiple="multiple">
   <input type="submit" value="Update!"/>
 </form>
 </div>

@@ -38,6 +38,8 @@
     <a href="/logout">Logout</a>
 </div>
 <div class="container">
+    <h3>Image:</h3>
+    <img th:src="@{'data:image/jpeg;base64,'+${personInformation.generateBase64Image()}}" width="200px" height="200px"/>
     <table class="table table-borderless table-centralised">
         <tbody>
         <tr>
