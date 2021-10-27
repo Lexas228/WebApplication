@@ -1,13 +1,19 @@
 package ru.shishlov.btf.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Data
+@XmlRootElement
+@JsonIgnoreProperties(value = { "image" })
 public class PersonInformationDto {
 
     @Size(min = 2, max = 100)
@@ -18,6 +24,8 @@ public class PersonInformationDto {
 
     @NotNull
     @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat
+            (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date birthday;
 
     @NotNull
@@ -25,4 +33,10 @@ public class PersonInformationDto {
 
     @Size(min = 2, max = 100)
     private String address;
+
+    private ImageDto image;
+
+    public String generateBase64Image(){
+        return Base64.encodeBase64String(image.getBytes());
+    }
 }

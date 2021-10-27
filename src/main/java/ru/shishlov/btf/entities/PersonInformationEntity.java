@@ -35,4 +35,8 @@ public class PersonInformationEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "person_id", nullable = false)
     private PersonEntity person;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "image_id", nullable = false)
+    private Image image;
 }

@@ -10,46 +10,50 @@
 </head>
 <body>
 <div class="container">
-        <form class="form-signup" th:method="POST" th:action="@{/people/new}" th:object="${person}">
+        <form class="form-signup" th:method="POST" th:action="@{/people/new}" th:object="${person}" enctype="multipart/form-data">
         <h2 class="form-signup-heading">Sign up page</h2>
         <p>
             <label for="name" class="sr-only">Username:</label>
-            <input type="text" id="name"  name="name" th:field="*{personInformation.name}"  class="form-control" placeholder="Name" required>
+            <input type="text" id="name"  th:field="*{personInformation.name}"  class="form-control" placeholder="Name" required>
             <div style="color:red" th:if="${#fields.hasErrors('personInformation.name')}" th:errors="*{personInformation.name}">Name Error</div>
         </p>
         <p>
             <label for="surname" class="sr-only">Password:</label>
-            <input type="text" id="surname" name="surname" class="form-control" th:field="*{personInformation.surname}"  placeholder="Surname" required>
+            <input type="text" id="surname" class="form-control" th:field="*{personInformation.surname}"  placeholder="Surname" required>
             <div style="color:red" th:if="${#fields.hasErrors('personInformation.surname')}" th:errors="*{personInformation.surname}">Surname Error</div>
         </p>
         <p>
             <label for="login" class="sr-only">Login:</label>
-            <input type="text" id="login" name="login" th:field="*{login}" class="form-control" placeholder="Login" required>
+            <input type="text" id="login"  th:field="*{login}" class="form-control" placeholder="Login" required>
             <div style="color:red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Login Error</div>
         </p>
         <p>
             <label for="information" class="sr-only">Enter some information about you:</label>
-            <textarea id="information" name="information" th:field="*{personInformation.information}" class="form-control" placeholder="Information"></textarea>
+            <textarea id="information"  th:field="*{personInformation.information}" class="form-control" placeholder="Information"></textarea>
         </p>
         <p>
             <label for="birthday" class="sr-only">Your birthday:</label>
-            <input type="date" id="birthday" name="birthday" th:field="*{personInformation.birthday}" class="form-control" required>
+            <input type="date" id="birthday" th:field="*{personInformation.birthday}" class="form-control" required>
             <div style="color:red" th:if="${#fields.hasErrors('personInformation.birthday')}" th:errors="*{personInformation.birthday}">Birthday Error</div>
         </p>
         <p>
             <label for="address" class="sr-only">Address:</label>
-            <input type="text" id="address" name="address" th:field="*{personInformation.address}" class="form-control" placeholder="Address" required>
+            <input type="text" id="address" th:field="*{personInformation.address}" class="form-control" placeholder="Address" required>
             <div style="color:red" th:if="${#fields.hasErrors('personInformation.address')}" th:errors="*{personInformation.address}">Address Error</div>
         </p>
         <p>
             <label for="password" >Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
-        <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+            <input type="password" id="password" th:field="*{password}" class="form-control" required>
+            <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
         </p>
         <p>
             <label for="confirmPassword">Confirm password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
-        <div style="color:red" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Password Error</div>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required>
+            <div style="color:red" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Password Error</div>
+        </p>
+        <p>
+            <label for="image">Your image:</label>
+            <input type="file" id="image" class="form-control" th:field="*{personInformation.image.file}" accept="image/png, image/jpeg" multiple="multiple">
         </p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
     </form>

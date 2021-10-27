@@ -12,11 +12,12 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @FieldMatch(first = "newPassword", second = "confirmNewPassword", message = "The password fields must match")
 public class PasswordDto {
-    @NotEmpty
+    @Size(min = 2, max = 100)
     private String userOldPassword;
-    @NotEmpty
+
     @Size(min = 2, max = 100)
     private String newPassword;
-    @NotEmpty
+
+    @Size(min = 2, max = 100)
     private String confirmNewPassword;
 }
