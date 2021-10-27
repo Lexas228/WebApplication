@@ -22,18 +22,19 @@ public class PersonParser {
         this.xmlMapper = xmlMapper;
     }
 
-    public PersonDto toPersonFromXml(MultipartFile file){
-        PersonDto dto = null;
-        try {
-             dto = xmlMapper.readValue(file.getInputStream(), PersonDto.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return dto;
+    public PersonDto toPersonFromXml(MultipartFile file) throws IOException {
+        return xmlMapper.readValue(file.getInputStream(), PersonDto.class);
     }
 
     public void toXmlFromPersonInfo(PersonInformationDto person, OutputStream stream){
-        XmlMapper xmlMapper = new XmlMapper();
+        try {
+            xmlMapper.writeValue(stream, person);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void toXmlFromPerson(PersonDto person, OutputStream stream){
         try {
             xmlMapper.writeValue(stream, person);
         } catch (IOException e) {

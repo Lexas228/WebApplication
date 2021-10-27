@@ -89,7 +89,7 @@ public class PeopleController {
     @GetMapping("/{login}")
     public String showInfo(@PathVariable String login, Model model, Principal principal){
         model.addAttribute("personInformation", peopleService.findByLogin(login).getPersonInformation());
-        model.addAttribute("userName", principal.getName());
+        model.addAttribute("canShow", principal.getName().equals(login));
         model.addAttribute("login", login);
         return "people/information";
     }
@@ -114,16 +114,30 @@ public class PeopleController {
 
     @PostMapping(path = "/new/xml",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String createWithXml(@ModelAttribute("file") MultipartFile file, HttpServletRequest request){
-        PersonDto personDto = personParser.toPersonFromXml(file);
-        if(!peopleService.isAvailableToSave(personDto)) return "redirect:/people/login";
-        String rawPass = personDto.getPassword();
-        peopleService.save(personDto);
         try {
-            request.login(personDto.getLogin(), rawPass);
-        } catch (ServletException e) {
-            e.printStackTrace();
+            PersonDto personDto = personParser.toPersonFromXml(file);
+            if(!peopleService.isAvailableToSave(personDto)) return "redirect:/people/login";
+            String rawPass = personDto.getPassword();
+            peopleService.save(personDto);
+            try {
+                request.login(personDto.getLogin(), rawPass);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            return "redirect:/people/login";
         }
         return "redirect:/people/home";
+    }
+
+    @GetMapping("/new/xml")
+    public void getXmlExample(HttpServletResponse response) throws IOException {
+        PersonDto personDto = new PersonDto();
+        personDto.setPersonInformation(new PersonInformationDto());
+        response.setContentType("application/xml");
+        response.addHeader("Content-Disposition", "attachment; filename=example.xml");
+        personParser.toXmlFromPerson(personDto, response.getOutputStream());
+        response.getOutputStream().flush();
     }
 
     @GetMapping("/new")
