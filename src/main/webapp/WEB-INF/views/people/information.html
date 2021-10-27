@@ -38,8 +38,6 @@
     <a href="/logout">Logout</a>
 </div>
 <div class="container">
-    <h3>Image:</h3>
-    <img th:src="@{'data:image/jpeg;base64,'+${personInformation.generateBase64Image()}}" width="200px" height="200px"/>
     <table class="table table-borderless table-centralised">
         <tbody>
         <tr>
@@ -69,19 +67,14 @@
         </tr>
         </tbody>
     </table>
-    <div th:if="${canShow}">
-    <form th:method="GET"  th:action="@{/people/{login}/edit(login=${login})}">
+    <form th:method="GET" th:if="${userName.equals(login)}" th:action="@{/people/{login}/edit(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Edit">Edit</button>
     </form>
-    <form th:method="POST"  th:action="@{/people/{login}/delete(login=${login})}">
+    <form th:method="POST" th:if="${userName.equals(login)}" th:action="@{/people/{login}/delete(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Delete">Delete</button>
     </form>
-    <form th:method="GET"  th:action="@{/people/{login}/resetPassword(login=${login})}">
+    <form th:method="GET" th:if="${userName.equals(login)}" th:action="@{/people/{login}/resetPassword(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Reset password">Reset password</button>
-    </form>
-    </div>
-    <form th:method="GET" th:action="@{/people/{login}/xml(login=${login})}">
-        <button class="btn btn-lg btn-primary" type="submit" value="Download in xml">Download in xml</button>
     </form>
 </div>
 
