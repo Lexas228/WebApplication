@@ -1,12 +1,16 @@
 package ru.shishlov.btf.components.images;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
-import ru.shishlov.btf.entities.Image;
 
-import javax.persistence.Column;
+@AllArgsConstructor
+@Getter
+@Setter
+public class ImageHelper {
+    private ImageHandler imageHandler;
+    private ImageConvertor imageConvertor;
 
-@Component
-public interface ImageHelper {
-    void prepareForSave(Image image, String login);
-    void prepareForUpdate(Image image);
 }

@@ -5,15 +5,18 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.shishlov.btf.entities.Image;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.apache.tomcat.util.http.fileupload.FileUtils.deleteDirectory;
+
 
 @Component
 @PropertySource(value = "classpath:application.properties")
-public class ImageHelperFS implements ImageHelper{
+public class ImageHandlerFS implements ImageHandler {
     @Value(value = "${images.path}")
     private String imagePath;
 
@@ -36,6 +39,17 @@ public class ImageHelperFS implements ImageHelper{
         try {
             Files.write(p, image.getContent());
             image.setContent(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void prepareForDelete(String login) {
+        Path p = Paths.get(imagePath + login);
+        File f = new File(p.toString());
+        try {
+            deleteDirectory(f);
         } catch (IOException e) {
             e.printStackTrace();
         }

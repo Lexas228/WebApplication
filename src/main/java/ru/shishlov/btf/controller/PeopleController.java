@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.components.PersonParser;
@@ -14,7 +13,12 @@ import ru.shishlov.btf.dto.PasswordDto;
 import ru.shishlov.btf.dto.PersonDto;
 import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.services.PeopleService;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 
 
@@ -91,23 +95,35 @@ public class PeopleController {
     }
 
     @PostMapping( path = "/new",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public String create(@ModelAttribute("person") @Valid PersonDto person, BindingResult bindingResult){
+    public String create(@ModelAttribute("person") @Valid PersonDto person, BindingResult bindingResult, HttpServletRequest request){
         if(!peopleService.isAvailableLogin(person.getLogin())){
             bindingResult.rejectValue("login", "login", "This login is busy");
         }
         if(bindingResult.hasErrors()){
             return "people/new";
         }
+        String rawPass = person.getPassword();
         peopleService.save(person);
+        try {
+            request.login(person.getLogin(), rawPass);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
         return "redirect:/people/"+person.getLogin();
     }
 
     @PostMapping(path = "/new/xml",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public String createWithXml(@ModelAttribute("file") MultipartFile file){
-        System.out.println("here");
+    public String createWithXml(@ModelAttribute("file") MultipartFile file, HttpServletRequest request){
         PersonDto personDto = personParser.toPersonFromXml(file);
-        System.out.println(personDto.getLogin());
-        return "redirect:/people/new";
+        if(!peopleService.isAvailableToSave(personDto)) return "redirect:/people/login";
+        String rawPass = personDto.getPassword();
+        peopleService.save(personDto);
+        try {
+            request.login(personDto.getLogin(), rawPass);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/people/home";
     }
 
     @GetMapping("/new")
@@ -122,4 +138,13 @@ public class PeopleController {
         peopleService.delete(login);
         return "redirect:/logout";
     }
+    @GetMapping("/{login}/xml")
+    public void downloadFile(@PathVariable("login") String login, HttpServletResponse response) throws IOException {
+        PersonInformationDto dto = peopleService.findInfoByLogin(login);
+        response.setContentType("application/xml");
+        response.addHeader("Content-Disposition", "attachment; filename="+dto.getName() + ".xml");
+        personParser.toXmlFromPersonInfo(dto, response.getOutputStream());
+        response.getOutputStream().flush();
+    }
+
 }

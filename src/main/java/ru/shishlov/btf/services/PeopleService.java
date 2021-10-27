@@ -1,9 +1,7 @@
 package ru.shishlov.btf.services;
 
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,8 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import ru.shishlov.btf.components.Transformator;
+import ru.shishlov.btf.components.PersonConvertor;
 import ru.shishlov.btf.dto.PersonDto;
 import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.Image;
@@ -20,13 +17,6 @@ import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 import ru.shishlov.btf.repositories.PeopleInformationRepository;
 import ru.shishlov.btf.repositories.PeopleRepository;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -39,17 +29,17 @@ public class PeopleService implements UserDetailsService{
     private final PeopleInformationRepository peopleInformationRepository;
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
-    private final Transformator transformator;
+    private final PersonConvertor personConvertor;
 
 
 
     @Autowired
     public PeopleService(PeopleRepository peopleRepository, PasswordEncoder passwordEncoder,
-                         PeopleInformationRepository peopleInformationRepository, Transformator transformator, ImageService imageService){
+                         PeopleInformationRepository peopleInformationRepository, PersonConvertor personConvertor, ImageService imageService){
         this.peopleRepository = peopleRepository;
         this.passwordEncoder = passwordEncoder;
         this.peopleInformationRepository = peopleInformationRepository;
-        this.transformator = transformator;
+        this.personConvertor = personConvertor;
         this.imageService = imageService;
     }
 
@@ -66,9 +56,13 @@ public class PeopleService implements UserDetailsService{
        peopleInformationRepository.save(old);
     }
 
+    public PersonInformationDto findInfoByLogin(String login){
+        return personConvertor.toPersonInformationDto(peopleInformationRepository.findByPersonLogin(login));
+    }
+
     public void save(PersonDto person){
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-        PersonEntity entity = transformator.toPersonEntity(person);
+        PersonEntity entity = personConvertor.toPersonEntity(person);
         PersonInformationEntity pers = entity.getPersonInformation();
         Image image = imageService.save(person.getPersonInformation().getImage(), person.getLogin());
         pers.setImage(image);
@@ -76,15 +70,16 @@ public class PeopleService implements UserDetailsService{
     }
 
     public Collection<PersonDto> getAll(){
-        return peopleRepository.findAll().stream().map(transformator::toPersonDto).collect(Collectors.toList());
+        return peopleRepository.findAll().stream().map(personConvertor::toPersonDto).collect(Collectors.toList());
     }
 
     public PersonDto findByLogin(String login){
-        return transformator.toPersonDto(peopleRepository.findByLogin(login));
+        return personConvertor.toPersonDto(peopleRepository.findByLogin(login));
     }
 
     public void delete(String login){
         peopleRepository.deleteByLogin(login);
+        imageService.delete(login);
     }
 
     @Override
@@ -111,6 +106,13 @@ public class PeopleService implements UserDetailsService{
 
     public boolean isAvailableLogin(String login){
         return !peopleRepository.existsByLogin(login);
+    }
+
+    public boolean isAvailableToSave(PersonDto person){
+        if(!isAvailableLogin(person.getLogin())){
+            return false;
+        }
+        return person.getPassword().equals(person.getConfirmPassword());
     }
 
 

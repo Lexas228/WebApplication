@@ -16,7 +16,7 @@ public abstract class ImageConvertorImp implements ImageConvertor {
 
     @Override
     public Image toImageEntity(ImageDto imageDto) {
-        ImageDto need = imageDto.isEmpty() ? commonImage : imageDto;
+        ImageDto need = imageDto == null || imageDto.isEmpty() ? commonImage : imageDto;
         Image im = new Image();
         im.setName(need.getName());
         im.setContent(need.getBytes());

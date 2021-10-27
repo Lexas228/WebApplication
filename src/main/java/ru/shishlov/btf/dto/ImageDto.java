@@ -1,10 +1,14 @@
 package ru.shishlov.btf.dto;
 
 import antlr.StringUtils;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@XmlRootElement
 public class ImageDto {
     private MultipartFile file;
 

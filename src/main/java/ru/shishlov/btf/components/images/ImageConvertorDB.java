@@ -8,10 +8,18 @@ import ru.shishlov.btf.entities.Image;
 
 @Component
 public class ImageConvertorDB extends ImageConvertorImp {
+    private ImageConvertorFS imageConvertorFS;
+
+    @Autowired
+    public void setImageConvertorFS(ImageConvertorFS imageConvertorFS) {
+        this.imageConvertorFS = imageConvertorFS;
+    }
 
     @Override
     public ImageDto toImageDto(Image image) {
-
+        if(image.getContent() == null){
+            return imageConvertorFS.toImageDto(image);
+        }
         MultipartFile file = new MockMultipartFile(image.getName(), image.getContent());
         return new ImageDto(file);
 

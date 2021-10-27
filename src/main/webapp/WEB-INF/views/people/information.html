@@ -78,6 +78,9 @@
     <form th:method="GET" th:if="${userName.equals(login)}" th:action="@{/people/{login}/resetPassword(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Reset password">Reset password</button>
     </form>
+    <form th:method="GET" th:action="@{/people/{login}/xml(login=${login})}">
+        <button class="btn btn-lg btn-primary" type="submit" value="Download in xml">Download in xml</button>
+    </form>
 </div>
 
 </body>
