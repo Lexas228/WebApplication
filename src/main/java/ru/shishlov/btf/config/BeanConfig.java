@@ -1,5 +1,6 @@
 package ru.shishlov.btf.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +43,6 @@ public class BeanConfig {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Bean
-    @Scope("prototype")
-    public XmlMapper xmlMapper(){
-        return new XmlMapper();
     }
 
     @Bean

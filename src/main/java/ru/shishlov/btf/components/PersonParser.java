@@ -1,45 +1,54 @@
 package ru.shishlov.btf.components;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.dto.PersonDto;
 import ru.shishlov.btf.dto.PersonInformationDto;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
+
 
 @Component
 public class PersonParser {
-    private final XmlMapper xmlMapper;
-
-    @Autowired
-    public PersonParser(XmlMapper xmlMapper) {
-        this.xmlMapper = xmlMapper;
-    }
 
     public PersonDto toPersonFromXml(MultipartFile file) throws IOException {
-        return xmlMapper.readValue(file.getInputStream(), PersonDto.class);
+        return toPersonFromFile(file, new XmlMapper());
     }
 
-    public void toXmlFromPersonInfo(PersonInformationDto person, OutputStream stream){
-        try {
-            xmlMapper.writeValue(stream, person);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public PersonDto toPersonFromJson(MultipartFile file) throws IOException {
+        return toPersonFromFile(file, new ObjectMapper());
     }
 
-    public void toXmlFromPerson(PersonDto person, OutputStream stream){
-        try {
-            xmlMapper.writeValue(stream, person);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void toXmlFromPersonInfo(PersonInformationDto person, OutputStream stream) throws IOException {
+        toFileFromPersonInfo(person, stream, new XmlMapper());
+    }
+
+    public void toJsonFromPersonInfo(PersonInformationDto person, OutputStream stream) throws IOException {
+        toFileFromPersonInfo(person, stream, new ObjectMapper());
+    }
+
+
+    public void toXmlFromPerson(PersonDto person, OutputStream stream) throws IOException {
+        toFileFromPerson(person, stream, new XmlMapper());
+    }
+
+    public void toJsonFromPerson(PersonDto person, OutputStream stream) throws IOException {
+        toFileFromPerson(person, stream, new ObjectMapper());
+    }
+
+    private PersonDto toPersonFromFile(MultipartFile file, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(file.getInputStream(), PersonDto.class);
+    }
+
+    private void toFileFromPerson(PersonDto person, OutputStream stream, ObjectMapper mapper) throws IOException {
+        mapper.writeValue(stream, person);
+    }
+
+    private void toFileFromPersonInfo(PersonInformationDto info, OutputStream stream, ObjectMapper mapper) throws IOException {
+        mapper.writeValue(stream, info);
     }
 
 }

@@ -80,8 +80,11 @@
         <button class="btn btn-lg btn-primary" type="submit" value="Reset password">Reset password</button>
     </form>
         </div>
-    <form th:method="GET" th:action="@{/people/{login}/xml(login=${login})}">
+    <form th:method="GET" th:action="@{/people/{login}/file/xml(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Download xml">Download in xml</button>
+    </form>
+    <form th:method="GET" th:action="@{/people/{login}/file/json(login=${login})}">
+        <button class="btn btn-lg btn-primary" type="submit" value="Download json">Download in json</button>
     </form>
 </div>
 

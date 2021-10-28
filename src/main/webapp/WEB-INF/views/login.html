@@ -33,29 +33,66 @@
     <form class="form-signin" method="get" action="people/new">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
     </form>
-    <label for="xmlCheckBox" class="" style="position:absolute; left:820px">Create with XML file</label>
-    <input type="checkbox" class="" style="position:absolute; left:800px" name="xmlCreate" id="xmlCheckBox"/>
-        <form id="xmlBox" th:method="POST" th:action="@{/people/new/xml}" class="form-signin" hidden enctype="multipart/form-data">
+    <label for="xmlCheckBox" style="position:absolute; left:820px">Create with XML file</label>
+    <input type="checkbox" style="position:absolute; left:800px" name="xmlCreate" id="xmlCheckBox"/>
+    <br>
+    <label for="jsonCheckBox" style="position:absolute; left:820px">Create with Json file</label>
+    <input type="checkbox" style="position:absolute; left:800px" name="jsonCreate" id="jsonCheckBox"/>
+        <form id="xmlBox" th:method="POST" action="people/new/file" class="form-signin" hidden enctype="multipart/form-data">
             <p>
-                <label for="file">Your xml file:</label>
-                <input type="file" id="file" class="form-control" name="file" accept="text/xml" multiple="multiple">
+                <label for="file" id="label">Your xml file:</label>
+                <input type="file" id="file" class="form-control" name="file" accept="text/xml text/json" multiple="multiple">
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
             </p>
         </form>
-    <form id="exampleForm" th:method="GET" th:action="@{/people/new/xml}" class="form-signin" hidden>
+    <form id="exampleForm" th:method="GET" action="people/new/file" class="form-signin" hidden>
         <p>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Download example</button>
         </p>
     </form>
 </div>
-<script>
-    const checkbox = document.getElementById('xmlCheckBox');
+<script th:inline="javascript">
+    const xmlCheckBox = document.getElementById('xmlCheckBox');
+    const jsonCheckBox = document.getElementById('jsonCheckBox');
     const form = document.getElementById('xmlBox');
+    const label = document.getElementById('label');
     const exForm = document.getElementById('exampleForm');
-    checkbox.addEventListener('change', (event) => {
-        form.hidden = !event.currentTarget.checked;
-        exForm.hidden = !event.currentTarget.checked;
-    })
+    const actionForXml = "people/new/file/xml" ;
+    const actionForJson = "people/new/file/json";
+    const labelForXml = "Choose your xml file";
+    const labelForJson = "Choose your json file";
+
+    xmlCheckBox.addEventListener('change', (event) => {
+        if(jsonCheckBox.checked){
+            jsonCheckBox.click();
+        }
+        formHandler(!event.currentTarget.checked);
+        if(event.currentTarget.checked) {
+            form.action = actionForXml;
+            exForm.action = actionForXml;
+            label.innerText = labelForXml;
+        }
+
+    });
+
+    jsonCheckBox.addEventListener('change', (event) => {
+        if(xmlCheckBox.checked){
+            xmlCheckBox.click();
+        }
+        formHandler(!event.currentTarget.checked);
+        if(event.currentTarget.checked) {
+            form.action = actionForJson;
+            exForm.action = actionForJson;
+            label.innerText = labelForJson;
+        }
+    });
+
+    function formHandler(status){
+        form.hidden = status;
+        exForm.hidden = status
+    }
+
+
 </script>
 
 </body></html>

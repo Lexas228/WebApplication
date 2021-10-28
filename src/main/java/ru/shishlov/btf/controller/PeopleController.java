@@ -44,6 +44,7 @@ public class PeopleController {
         model.addAttribute("people", peopleService.getAll());
         return "people/all";
     }
+
     @PreAuthorize("#login.equals(principal.username)")
     @GetMapping("/{login}/edit")
     public String edit(Model model, @PathVariable("login") String login) {
@@ -51,6 +52,7 @@ public class PeopleController {
         model.addAttribute("login", login);
         return "people/edit";
     }
+
     @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/edit")
     public String update(@ModelAttribute("person") @Valid PersonInformationDto personInformation,
@@ -94,71 +96,20 @@ public class PeopleController {
         return "people/information";
     }
 
-    @PostMapping( path = "/new",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public String create(@ModelAttribute("person") @Valid PersonDto person, BindingResult bindingResult, HttpServletRequest request){
-        if(!peopleService.isAvailableLogin(person.getLogin())){
-            bindingResult.rejectValue("login", "login", "This login is busy");
-        }
-        if(bindingResult.hasErrors()){
-            return "people/new";
-        }
-        String rawPass = person.getPassword();
-        peopleService.save(person);
-        try {
-            request.login(person.getLogin(), rawPass);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/people/"+person.getLogin();
-    }
-
-    @PostMapping(path = "/new/xml",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public String createWithXml(@ModelAttribute("file") MultipartFile file, HttpServletRequest request){
-        try {
-            PersonDto personDto = personParser.toPersonFromXml(file);
-            if(!peopleService.isAvailableToSave(personDto)) return "redirect:/people/login";
-            String rawPass = personDto.getPassword();
-            peopleService.save(personDto);
-            try {
-                request.login(personDto.getLogin(), rawPass);
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            return "redirect:/people/login";
-        }
-        return "redirect:/people/home";
-    }
-
-    @GetMapping("/new/xml")
-    public void getXmlExample(HttpServletResponse response) throws IOException {
-        PersonDto personDto = new PersonDto();
-        personDto.setPersonInformation(new PersonInformationDto());
-        response.setContentType("application/xml");
-        response.addHeader("Content-Disposition", "attachment; filename=example.xml");
-        personParser.toXmlFromPerson(personDto, response.getOutputStream());
-        response.getOutputStream().flush();
-    }
-
-    @GetMapping("/new")
-    public String newPerson(@ModelAttribute("person") PersonDto person){
-        person.setPersonInformation(new PersonInformationDto());
-        return "/people/new";
-    }
-
     @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/delete")
     public String delete(@PathVariable("login") String login) {
         peopleService.delete(login);
         return "redirect:/logout";
     }
-    @GetMapping("/{login}/xml")
-    public void downloadFile(@PathVariable("login") String login, HttpServletResponse response) throws IOException {
+
+    @GetMapping("/{login}/file/{type}")
+    public void downloadXmlFile(@PathVariable("login") String login, HttpServletResponse response, @PathVariable("type") String type) throws IOException {
         PersonInformationDto dto = peopleService.findInfoByLogin(login);
         response.setContentType("application/xml");
-        response.addHeader("Content-Disposition", "attachment; filename="+dto.getName() + ".xml");
-        personParser.toXmlFromPersonInfo(dto, response.getOutputStream());
+        response.addHeader("Content-Disposition", "attachment; filename="+dto.getName() + "." + type);
+        if(type.equals("xml"))personParser.toXmlFromPersonInfo(dto, response.getOutputStream());
+        else personParser.toJsonFromPersonInfo(dto, response.getOutputStream());
         response.getOutputStream().flush();
     }
-
 }
