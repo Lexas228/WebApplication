@@ -33,11 +33,13 @@
 </head>
 <body>
 <div class="topnav">
-    <a class="active" href="/people/home">Home</a>
+    <a class="active" href="/people/home">Page</a>
     <a href="/people">All users</a>
     <a href="/logout">Logout</a>
 </div>
 <div class="container">
+    <h3>My image</h3>
+    <img th:src="*{'data:image/png;base64,'+personInformation.image.toBase64()}" height="300px" width="300px">
     <table class="table table-borderless table-centralised">
         <tbody>
         <tr>
@@ -67,14 +69,19 @@
         </tr>
         </tbody>
     </table>
-    <form th:method="GET" th:if="${userName.equals(login)}" th:action="@{/people/{login}/edit(login=${login})}">
+    <div th:if="${canShow}">
+    <form th:method="GET" th:action="@{/people/{login}/edit(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Edit">Edit</button>
     </form>
-    <form th:method="POST" th:if="${userName.equals(login)}" th:action="@{/people/{login}/delete(login=${login})}">
+    <form th:method="POST" th:action="@{/people/{login}/delete(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Delete">Delete</button>
     </form>
-    <form th:method="GET" th:if="${userName.equals(login)}" th:action="@{/people/{login}/resetPassword(login=${login})}">
+    <form th:method="GET" th:action="@{/people/{login}/resetPassword(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Reset password">Reset password</button>
+    </form>
+        </div>
+    <form th:method="GET" th:action="@{/people/{login}/xml(login=${login})}">
+        <button class="btn btn-lg btn-primary" type="submit" value="Download xml">Download in xml</button>
     </form>
 </div>
 

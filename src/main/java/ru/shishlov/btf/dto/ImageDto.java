@@ -2,6 +2,7 @@ package ru.shishlov.btf.dto;
 
 import antlr.StringUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.base64.Base64;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -43,5 +44,9 @@ public class ImageDto {
 
     public boolean isEmpty(){
         return file.isEmpty();
+    }
+
+    public String toBase64(){
+        return Base64.toBase64String(getBytes());
     }
 }
