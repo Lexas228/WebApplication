@@ -39,7 +39,7 @@
 </div>
 <div class="container">
     <h3>My image</h3>
-    <img th:src="*{'data:image/png;base64,'+personInformation.image.toBase64()}" height="300px" width="300px">
+    <img th:src="*{'data:image/png;base64,'+personInformation.generateBase64Image()}" height="300px" width="300px">
     <table class="table table-borderless table-centralised">
         <tbody>
         <tr>

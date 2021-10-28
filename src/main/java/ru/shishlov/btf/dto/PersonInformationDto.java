@@ -25,7 +25,7 @@ public class PersonInformationDto {
     @NotNull
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @JsonFormat
-            (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+            (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date birthday;
 
     @NotNull

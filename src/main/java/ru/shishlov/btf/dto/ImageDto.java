@@ -46,7 +46,4 @@ public class ImageDto {
         return file.isEmpty();
     }
 
-    public String toBase64(){
-        return Base64.toBase64String(getBytes());
-    }
 }
