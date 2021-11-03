@@ -1,9 +1,8 @@
 package ru.shishlov.btf.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.shishlov.btf.components.images.ImageHelper;
+import ru.shishlov.btf.components.images.ImageConvertorBoss;
 import ru.shishlov.btf.dto.ImageDto;
 import ru.shishlov.btf.entities.Image;
 import ru.shishlov.btf.repositories.ImageRepository;
@@ -11,21 +10,20 @@ import ru.shishlov.btf.repositories.ImageRepository;
 import java.util.Optional;
 
 @Service
-@PropertySource(value = "classpath:application.properties")
 public class ImageService {
     private final ImageRepository repository;
-    private final ImageHelper imageHelper;
+    private final ImageConvertorBoss imageConvertorBoss;
 
-    @Autowired
-    public ImageService(ImageRepository repository, ImageHelper imageHelper) {
+
+    public ImageService(@Qualifier("imageRepositoryBD") ImageRepository repository, ImageConvertorBoss imageConvertorBoss) {
         this.repository = repository;
-        this.imageHelper = imageHelper;
+        this.imageConvertorBoss = imageConvertorBoss;
     }
 
+
     public Image save(ImageDto dto, String login){
-        Image im = imageHelper.getImageConvertor().toImageEntity(dto);
-        imageHelper.getImageHandler().prepareForSave(im, login);
-        repository.save(im);
+        Image im = imageConvertorBoss.toImageEntity(dto);
+        repository.save(im, login);
         return im;
     }
 
@@ -35,13 +33,12 @@ public class ImageService {
             Image im = image.get();
             im.setContent(dto.getBytes());
             im.setName(dto.getName());
-            imageHelper.getImageHandler().prepareForUpdate(im);
-            repository.save(im);
+            repository.update(im);
         }
     }
 
-    public void delete(String login){
-        imageHelper.getImageHandler().prepareForDelete(login);
+    public void cleanAfterDeleting(String login){
+        repository.clean(login);
     }
 
 

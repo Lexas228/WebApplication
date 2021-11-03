@@ -6,7 +6,7 @@ import ru.shishlov.btf.dto.ImageDto;
 import ru.shishlov.btf.entities.Image;
 
 @Component
-public abstract class ImageConvertorImp implements ImageConvertor {
+public abstract class ImageConvertorAbs implements ImageConvertor {
     private ImageDto commonImage;
 
     @Autowired

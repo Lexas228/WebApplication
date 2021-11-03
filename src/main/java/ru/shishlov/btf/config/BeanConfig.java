@@ -25,10 +25,6 @@ public class BeanConfig {
     private String imagePath;
     @Value(value = "${common.image.name}")
     private String commonImageName;
-    private ImageHandlerDB imageHandlerDB;
-    private ImageConvertorDB imageConvertorDB;
-    private ImageConvertorFS imageConvertor;
-    private ImageHandlerFS imageHandlerFS;
 
 
     @Bean
@@ -45,24 +41,4 @@ public class BeanConfig {
         return null;
     }
 
-    @Bean
-    public ImageHelper imageHelper(){
-        return new ImageHelper(imageHandlerDB, imageConvertorDB); //can use FS here
-    }
-    @Autowired
-    public void setImageHandlerDB(ImageHandlerDB imageHandlerDB) {
-        this.imageHandlerDB = imageHandlerDB;
-    }
-    @Autowired
-    public void setImageConvertorDB(ImageConvertorDB imageConvertorDB) {
-        this.imageConvertorDB = imageConvertorDB;
-    }
-    @Autowired
-    public void setImageConvertor(ImageConvertorFS imageConvertor) {
-        this.imageConvertor = imageConvertor;
-    }
-    @Autowired
-    public void setImageHandlerFS(ImageHandlerFS imageHandlerFS) {
-        this.imageHandlerFS = imageHandlerFS;
-    }
 }

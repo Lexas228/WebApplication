@@ -1,17 +1,12 @@
 package ru.shishlov.btf.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.shishlov.btf.entities.Image;
 
 import java.util.Optional;
 
 @Repository
-public interface ImageRepository {
-    void save(Image image, String login);
-    void clean(String login);
-    void update(Image image);
+public interface ImageRepositoryJpa extends JpaRepository<Image, Long> {
     Optional<Image> findById(long id);
-
-
-
 }

@@ -1,10 +1,8 @@
 package ru.shishlov.btf.components;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.shishlov.btf.components.images.ImageConvertor;
-import ru.shishlov.btf.components.images.ImageHelper;
+import ru.shishlov.btf.components.images.ImageConvertorBoss;
 import ru.shishlov.btf.dto.PersonDto;
 import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.PersonEntity;
@@ -13,11 +11,11 @@ import ru.shishlov.btf.entities.PersonInformationEntity;
 
 @Component
 public class PersonConvertor {
-    private final ImageHelper imageHelper;
+    private final ImageConvertorBoss imageConvertorBoss;
 
     @Autowired
-    public PersonConvertor(ImageHelper imageHelper){
-        this.imageHelper = imageHelper;
+    public PersonConvertor(ImageConvertorBoss imageConvertorBoss){
+        this.imageConvertorBoss = imageConvertorBoss;
     }
     public PersonEntity toPersonEntity(PersonDto personDto){
         PersonEntity personEntity = null;
@@ -52,7 +50,7 @@ public class PersonConvertor {
             personInformationDto.setInformation(personInformationEntity.getInformation());
             personInformationDto.setAddress(personInformationEntity.getAddress());
             personInformationDto.setBirthday(personInformationEntity.getBirthday());
-            personInformationDto.setImage(imageHelper.getImageConvertor().toImageDto(personInformationEntity.getImage()));
+            personInformationDto.setImage(imageConvertorBoss.toImageDto(personInformationEntity.getImage()));
         }
         return personInformationDto;
     }

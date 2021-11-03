@@ -79,7 +79,7 @@ public class PeopleService implements UserDetailsService{
 
     public void delete(String login){
         peopleRepository.deleteByLogin(login);
-        imageService.delete(login);
+        imageService.cleanAfterDeleting(login);
     }
 
     @Override
