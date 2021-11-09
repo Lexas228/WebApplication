@@ -33,6 +33,15 @@ public class AuthorizationController {
         return "/people/new";
     }
 
+    /**
+     *
+     * @param person
+     * @param bindingResult
+     * @param request
+     * Creating new person from request params
+     * @return redirecting to home page
+     */
+
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String create(@ModelAttribute("person") @Valid PersonDto person, BindingResult bindingResult, HttpServletRequest request){
         if(!peopleService.isAvailableLogin(person.getLogin())){
@@ -45,8 +54,16 @@ public class AuthorizationController {
         return "redirect:/people/"+person.getLogin();
     }
 
+    /**
+     *
+     * @param file
+     * @param request
+     * @param type
+     * Creating new person from file (xml or json)
+     * @return
+     */
     @PostMapping(path = "/file/{type}",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public String createWithXml(@ModelAttribute("file") MultipartFile file, HttpServletRequest request,
+    public String createWithFile(@ModelAttribute("file") MultipartFile file, HttpServletRequest request,
                                 @PathVariable("type") String type) {
         try {
             PersonDto personDto;
@@ -63,8 +80,15 @@ public class AuthorizationController {
         return "redirect:/people/home";
     }
 
+    /**
+     * @param response
+     * @param type
+     * @throws IOException
+     * loading file example to response output stream of new person (xml or json)
+     */
+
     @GetMapping("/file/{type}")
-    public void getXmlExample(HttpServletResponse response, @PathVariable("type") String type) throws IOException {
+    public void getFileExample(HttpServletResponse response, @PathVariable("type") String type) throws IOException {
         PersonDto personDto = new PersonDto();
         personDto.setPersonInformation(new PersonInformationDto());
         response.setContentType("application/"+type);
@@ -74,6 +98,14 @@ public class AuthorizationController {
         else personParser.toJsonFromPerson(personDto, response.getOutputStream());
         response.getOutputStream().flush();
     }
+
+    /**
+     *
+     * @param person
+     * @param request
+     * This method we call after registration to auto login his in web page
+     * @return
+     */
 
     private boolean saveAndTryToLogin(PersonDto person, HttpServletRequest request){
         String rawPass = person.getPassword();

@@ -10,7 +10,9 @@ import ru.shishlov.btf.dto.PersonInformationDto;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
+/**
+ * Class for making xml or json from person and vice versa
+ */
 @Component
 public class PersonParser {
 

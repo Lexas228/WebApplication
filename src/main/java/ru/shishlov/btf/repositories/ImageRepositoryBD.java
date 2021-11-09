@@ -25,7 +25,8 @@ public class ImageRepositoryBD implements ImageRepository{
 
     @Override
     public void clean(String login) {
-        //do nothing actually
+        //We don't have anything except data in bd which we have already deleted to this moment
+        //So we do anything here
     }
 
     @Override

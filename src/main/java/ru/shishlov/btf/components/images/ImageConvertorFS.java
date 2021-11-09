@@ -14,6 +14,12 @@ import java.io.IOException;
 
 @Component
 public class ImageConvertorFS extends ImageConvertorAbs {
+    /**
+     *
+     * @param image
+     * Taking imageEntity, then taking location from it and making imageDto
+     * @return ImageDto
+     */
 
     @Override
     public ImageDto toImageDto(Image image) {

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.shishlov.btf.dto.ImageDto;
 import ru.shishlov.btf.entities.Image;
 
+/**
+ * This class can decide what type of convert to do
+ */
 @Component
 public class ImageConvertorBoss implements ImageConvertor{
     private final ImageConvertorDB imageConvertorDB;

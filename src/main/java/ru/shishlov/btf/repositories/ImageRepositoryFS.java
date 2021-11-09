@@ -51,6 +51,11 @@ public class ImageRepositoryFS implements ImageRepository{
         }
     }
 
+    /**
+     *
+     * @param login
+     * Finding files which user with param login has and delete it
+     */
     @Override
     public void clean(String login) {
         Path p = Paths.get(imagePath + login);

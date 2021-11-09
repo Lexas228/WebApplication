@@ -8,6 +8,13 @@ import ru.shishlov.btf.entities.Image;
 
 @Component
 public class ImageConvertorDB extends ImageConvertorAbs {
+    /**
+     *
+     * @param image
+     * Taking image and make dto from that, only in that case
+     * if we have bytes in it
+     * @return ImageDto
+     */
     @Override
     public ImageDto toImageDto(Image image) {
         MultipartFile file = new MockMultipartFile(image.getName(), image.getContent());

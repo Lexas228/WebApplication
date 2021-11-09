@@ -8,10 +8,12 @@ import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 
-
+/**
+ * Class for converting from PersonEntity, PersonInformation to Dto and vice versa
+ */
 @Component
 public class PersonConvertor {
-    private final ImageConvertorBoss imageConvertorBoss;
+    private final ImageConvertorBoss imageConvertorBoss;//as we have image in personInformation we have to convert it too
 
     @Autowired
     public PersonConvertor(ImageConvertorBoss imageConvertorBoss){

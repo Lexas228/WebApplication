@@ -5,10 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.components.images.*;
@@ -27,6 +24,7 @@ public class BeanConfig {
     private String commonImageName;
 
 
+    @Description("bean for common image if user didn't chose his one")
     @Bean
     public ImageDto imageDto(){
         File fileItem = new File(imagePath + commonImageName);

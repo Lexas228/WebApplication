@@ -34,6 +34,12 @@ public class PeopleController {
         this.personParser = personParser;
     }
 
+    /**
+     *
+     * @param principal
+     * This method helps to autoredirect user to his page even if we don't have his login
+     * @return
+     */
     @GetMapping("/home")
     public String homeRedirection(Principal principal){
         return "redirect:"+ principal.getName();
@@ -89,7 +95,7 @@ public class PeopleController {
     }
 
     @GetMapping("/{login}")
-    public String showInfo(@PathVariable String login, Model model, Principal principal){
+    public String getPersonInfo(@PathVariable String login, Model model, Principal principal){
         model.addAttribute("personInformation", peopleService.findByLogin(login).getPersonInformation());
         model.addAttribute("canShow", principal.getName().equals(login));
         model.addAttribute("login", login);
@@ -98,13 +104,22 @@ public class PeopleController {
 
     @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/delete")
-    public String delete(@PathVariable("login") String login) {
+    public String deletePerson(@PathVariable("login") String login) {
         peopleService.delete(login);
         return "redirect:/logout";
     }
 
+    /**
+     *
+     * @param login
+     * @param response
+     * @param type
+     * @throws IOException
+     * Finding personInformation by login, convert it to type(xml or json) and
+     * send it throw response output stream
+     */
     @GetMapping("/{login}/file/{type}")
-    public void downloadXmlFile(@PathVariable("login") String login, HttpServletResponse response, @PathVariable("type") String type) throws IOException {
+    public void downloadPersonInfoInFile(@PathVariable("login") String login, HttpServletResponse response, @PathVariable("type") String type) throws IOException {
         PersonInformationDto dto = peopleService.findInfoByLogin(login);
         response.setContentType("application/xml");
         response.addHeader("Content-Disposition", "attachment; filename="+dto.getName() + "." + type);

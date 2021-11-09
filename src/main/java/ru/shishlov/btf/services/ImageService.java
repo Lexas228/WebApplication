@@ -37,6 +37,11 @@ public class ImageService {
         }
     }
 
+    /**
+     *
+     * @param login
+     * cleaning after deleting, actually only in that case when with use file system saving.
+     */
     public void cleanAfterDeleting(String login){
         repository.clean(login);
     }
