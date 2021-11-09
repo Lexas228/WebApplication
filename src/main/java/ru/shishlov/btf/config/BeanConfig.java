@@ -11,6 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.components.images.*;
 import ru.shishlov.btf.dto.ImageDto;
 
+import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,6 +41,12 @@ public class BeanConfig {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Bean
+    public Validator validator(){
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        return factory.getValidator();
     }
 
 }

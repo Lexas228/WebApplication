@@ -1,6 +1,7 @@
 package ru.shishlov.btf.services;
 
 
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,8 @@ import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 import ru.shishlov.btf.repositories.PeopleInformationRepository;
 import ru.shishlov.btf.repositories.PeopleRepository;
+
+import javax.validation.Validator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class PeopleService implements UserDetailsService{
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
     private final PersonConvertor personConvertor;
+    private Validator validator;
 
 
 
@@ -41,6 +45,11 @@ public class PeopleService implements UserDetailsService{
         this.peopleInformationRepository = peopleInformationRepository;
         this.personConvertor = personConvertor;
         this.imageService = imageService;
+    }
+
+    @Autowired
+    public void setValidator(Validator validator) {
+        this.validator = validator;
     }
 
     public void updateInfo(PersonInformationDto personInformation, String login){
@@ -109,10 +118,11 @@ public class PeopleService implements UserDetailsService{
     }
 
     public boolean isAvailableToSave(PersonDto person){
-        if(!isAvailableLogin(person.getLogin())){
-            return false;
+        var l = validator.validate(person);
+        if(l.isEmpty()){
+            return isAvailableLogin(person.getLogin());
         }
-        return person.getPassword().equals(person.getConfirmPassword());
+        return false;
     }
 
 
