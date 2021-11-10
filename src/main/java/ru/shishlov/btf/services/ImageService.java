@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 public class ImageService {
-    private final ImageRepository repository;
+    private ImageRepository repository;
     private final ImageConvertorBoss imageConvertorBoss;
 
 
@@ -20,6 +20,9 @@ public class ImageService {
         this.imageConvertorBoss = imageConvertorBoss;
     }
 
+    public void setRepository(ImageRepository repository) {
+        this.repository = repository;
+    }
 
     public Image save(ImageDto dto, String login){
         Image im = imageConvertorBoss.toImageEntity(dto);

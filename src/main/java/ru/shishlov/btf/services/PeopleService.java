@@ -22,6 +22,7 @@ import ru.shishlov.btf.repositories.PeopleRepository;
 import javax.validation.Validator;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -83,7 +84,8 @@ public class PeopleService implements UserDetailsService{
     }
 
     public PersonDto findByLogin(String login){
-        return personConvertor.toPersonDto(peopleRepository.findByLogin(login));
+        Optional<PersonEntity> pe = peopleRepository.findByLogin(login);
+        return pe.map(personConvertor::toPersonDto).orElse(null);
     }
 
     public void delete(String login){
@@ -93,15 +95,17 @@ public class PeopleService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        PersonEntity person = peopleRepository.findByLogin(s);
-        if(person == null){
+        Optional<PersonEntity> person = peopleRepository.findByLogin(s);
+        if(!person.isPresent()){
             throw new UsernameNotFoundException("User " + s + " was not found");
         }
-        return new User(person.getLogin(), person.getPassword(), new HashSet<>());
+        PersonEntity ps = person.get();
+        return new User(ps.getLogin(), ps.getPassword(), new HashSet<>());
     }
 
     public String getPasswordByLogin(String login){
-        return peopleRepository.findByLogin(login).getPassword();
+        Optional<PersonEntity> pe = peopleRepository.findByLogin(login);
+        return pe.map(PersonEntity::getPassword).orElse(null);
     }
 
     public void changePassword(String login, String password){

@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shishlov.btf.entities.PersonEntity;
 
+import java.util.Optional;
+
 @Repository
 public interface PeopleRepository extends JpaRepository<PersonEntity, Long> {
-    PersonEntity findByLogin(String login);
+    Optional<PersonEntity> findByLogin(String login);
     boolean existsByLogin(String login);
     @Transactional
     void deleteByLogin(String login);
