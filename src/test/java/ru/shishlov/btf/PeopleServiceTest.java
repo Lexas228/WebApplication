@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,6 +21,8 @@ import ru.shishlov.btf.services.PeopleService;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -37,7 +40,7 @@ public class PeopleServiceTest {
     @Value(value = "${common.image.name}")
     private String commonImageName;
 
-    @Autowired
+    @MockBean
     private ImageRepositoryFS imageFS;
 
     @Autowired
@@ -54,7 +57,7 @@ public class PeopleServiceTest {
 
 
     @Test
-    public void shouldBeCorrectSaveAndDelete(){
+    public void shouldBeCorrectSaveAndDelete() throws ParseException {
         PersonDto p = createUser();
         peopleService.save(p);
         PersonDto per = peopleService.findByLogin(p.getLogin());
@@ -65,7 +68,7 @@ public class PeopleServiceTest {
     }
 
     @Test
-    public void shouldBeCorrectCreatingDirectoryForImageAndDeletingIt(){
+    public void shouldBeCorrectCreatingDirectoryForImageAndDeletingIt() throws ParseException {
         imageService.setRepository(imageFS);
         PersonDto p = createUser();
         peopleService.save(p);
@@ -75,7 +78,12 @@ public class PeopleServiceTest {
         assertFalse(Files.exists(fileItem.toPath()));
     }
 
-    private PersonDto createUser(){
+    @Test
+    public void todo(){
+        System.out.println(new Date());
+    }
+
+    public static PersonDto createUser() throws ParseException {
         PersonDto personDto = new PersonDto();
         PersonInformationDto personInformationDto = new PersonInformationDto();
         personDto.setLogin("leo");
@@ -84,7 +92,8 @@ public class PeopleServiceTest {
         personInformationDto.setName("Aba");
         personInformationDto.setSurname("Bab");
         personInformationDto.setInformation("Blablabla");
-        personInformationDto.setBirthday(new Date());
+        Date d = new SimpleDateFormat("yyyy-MM-dd").parse("1984-11-24");
+        personInformationDto.setBirthday(d);
         personInformationDto.setAddress("I don't know");
         ImageDto dto = new ImageDto();
         dto.setFile(new MockMultipartFile("lala", new byte[]{}));

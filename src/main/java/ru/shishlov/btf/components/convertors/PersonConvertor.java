@@ -1,4 +1,4 @@
-package ru.shishlov.btf.components;
+package ru.shishlov.btf.components.convertors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,6 +53,7 @@ public class PersonConvertor {
             personInformationDto.setAddress(personInformationEntity.getAddress());
             personInformationDto.setBirthday(personInformationEntity.getBirthday());
             personInformationDto.setImage(imageConvertorBoss.toImageDto(personInformationEntity.getImage()));
+            personInformationDto.setLastAction(personInformationEntity.getLastAction());
         }
         return personInformationDto;
     }
@@ -66,6 +67,7 @@ public class PersonConvertor {
             personInformationEntity.setInformation(personInformationDto.getInformation());
             personInformationEntity.setAddress(personInformationDto.getAddress());
             personInformationEntity.setBirthday(personInformationDto.getBirthday());
+            personInformationEntity.setLastAction(personInformationDto.getLastAction());
         }
         return personInformationEntity;
     }

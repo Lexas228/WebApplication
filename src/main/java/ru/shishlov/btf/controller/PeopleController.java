@@ -36,24 +36,23 @@ public class PeopleController {
 
     /**
      *
-     * @param principal
      * This method helps to autoredirect user to his page even if we don't have his login
      * @return
      */
     @GetMapping("/home")
-    public String homeRedirection(Principal principal){
-        return "redirect:"+ principal.getName();
+    public String homeRedirection(Principal princ){
+        return "redirect:"+ princ.getName();
     }
 
     @GetMapping()
-    public String all(Model model){
+    public String all(Principal p, Model model){
         model.addAttribute("people", peopleService.getAll());
         return "people/all";
     }
 
     @PreAuthorize("#login.equals(principal.username)")
     @GetMapping("/{login}/edit")
-    public String edit(Model model, @PathVariable("login") String login) {
+    public String edit(Principal p, Model model, @PathVariable("login") String login) {
         model.addAttribute("personInformation", peopleService.findByLogin(login).getPersonInformation());
         model.addAttribute("login", login);
         return "people/edit";
@@ -61,7 +60,7 @@ public class PeopleController {
 
     @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/edit")
-    public String update(@ModelAttribute("person") @Valid PersonInformationDto personInformation,
+    public String update(Principal p, @ModelAttribute("person") @Valid PersonInformationDto personInformation,
                          BindingResult bindingResult,
                          @PathVariable("login") String login){
         if(bindingResult.hasErrors()){
@@ -73,7 +72,7 @@ public class PeopleController {
 
     @PreAuthorize("#login.equals(principal.username)")
     @GetMapping("/{login}/resetPassword")
-    public String changingPassword(@PathVariable("login") String login,
+    public String changingPassword(Principal p, @PathVariable("login") String login,
                                    @ModelAttribute("password") PasswordDto password, Model model) {
 
         model.addAttribute("login", login);
@@ -82,7 +81,7 @@ public class PeopleController {
 
     @PreAuthorize("#login.equals(principal.username)")
     @PostMapping("/{login}/resetPassword")
-    public String changePassword(@ModelAttribute("password") @Valid PasswordDto password,
+    public String changePassword(Principal p, @ModelAttribute("password") @Valid PasswordDto password,
                                  BindingResult result, @PathVariable String login) {
         if(!peopleService.isCorrectPassword(login, password.getUserOldPassword())){
             result.rejectValue("userOldPassword", "userOldPassword", "Old password is wrong");
@@ -95,9 +94,9 @@ public class PeopleController {
     }
 
     @GetMapping("/{login}")
-    public String getPersonInfo(@PathVariable String login, Model model, Principal principal){
+    public String getPersonInfo(Principal p, @PathVariable String login, Model model){
         model.addAttribute("personInformation", peopleService.findByLogin(login).getPersonInformation());
-        model.addAttribute("canShow", principal.getName().equals(login));
+        model.addAttribute("canShow", p.getName().equals(login));
         model.addAttribute("login", login);
         return "people/information";
     }
@@ -119,7 +118,7 @@ public class PeopleController {
      * send it throw response output stream
      */
     @GetMapping("/{login}/file/{type}")
-    public void downloadPersonInfoInFile(@PathVariable("login") String login, HttpServletResponse response, @PathVariable("type") String type) throws IOException {
+    public void downloadPersonInfoInFile(Principal p,@PathVariable("login") String login, HttpServletResponse response, @PathVariable("type") String type) throws IOException {
         PersonInformationDto dto = peopleService.findInfoByLogin(login);
         response.setContentType("application/xml");
         response.addHeader("Content-Disposition", "attachment; filename="+dto.getName() + "." + type);

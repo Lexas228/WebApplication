@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Data
 @XmlRootElement
-@JsonIgnoreProperties(value = { "image" })
+@JsonIgnoreProperties(value = {"image", "lastAction"})
 public class PersonInformationDto {
 
     @Size(min = 2, max = 100)
@@ -35,6 +35,8 @@ public class PersonInformationDto {
     private String address;
 
     private ImageDto image;
+
+    private Date lastAction;
 
     public String generateBase64Image(){
         return Base64.encodeBase64String(image.getBytes());

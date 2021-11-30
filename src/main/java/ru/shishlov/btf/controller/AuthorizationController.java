@@ -50,6 +50,7 @@ public class AuthorizationController {
         if(bindingResult.hasErrors()){
             return "people/new";
         }
+
         saveAndTryToLogin(person, request);
         return "redirect:/people/"+person.getLogin();
     }

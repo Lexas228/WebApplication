@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.shishlov.btf.components.PersonConvertor;
+import ru.shishlov.btf.components.convertors.PersonConvertor;
 import ru.shishlov.btf.dto.PersonDto;
 import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.Image;
@@ -21,6 +21,7 @@ import ru.shishlov.btf.repositories.PeopleRepository;
 
 import javax.validation.Validator;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,11 +73,18 @@ public class PeopleService implements UserDetailsService{
 
     public void save(PersonDto person){
         person.setPassword(passwordEncoder.encode(person.getPassword()));
+        person.getPersonInformation().setLastAction(new Date());
         PersonEntity entity = personConvertor.toPersonEntity(person);
         PersonInformationEntity pers = entity.getPersonInformation();
         Image image = imageService.save(person.getPersonInformation().getImage(), person.getLogin());
         pers.setImage(image);
         peopleRepository.save(entity);
+    }
+
+    @Transactional
+    public void updateLastAction(String login){
+       // peopleInformationRepository.updateLastAction(new java.sql.Date(new Date().getTime()), login);
+        peopleInformationRepository.findByPersonLogin(login).setLastAction(new Date());
     }
 
     public Collection<PersonDto> getAll(){

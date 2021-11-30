@@ -39,4 +39,9 @@ public class PersonInformationEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "image_id", nullable = false)
     private Image image;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "last_action")
+    private Date lastAction;
+
 }

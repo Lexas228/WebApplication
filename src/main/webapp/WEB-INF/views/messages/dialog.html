@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dialog</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <style>
+        .topnav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h3 id="who" th:text="${who}"></h3>
+<h2 id="with" th:text="${with}"></h2>
+
+<div id="box" class="constant-values-container">
+    <ul id="messages">
+       <li th:each="message : ${messages}" th:text="${message.getLoginFrom()} +': ' + ${message.getText()}"></li>
+    </ul>
+    <label for="message" >Your message:</label>
+    <input type="text" id="message" class="form-control" placeholder="message">
+    <input type="button" onclick="sendMessage()" value="send"/>
+</div>
+<hr/>
+</body>
+<script>
+    let stompClient = null;
+    let currentUserLogin =document.getElementById("who").innerText;
+    let chatMember = document.getElementById("with").innerText;
+    const box = document.getElementById("box");
+    const dialog = document.getElementById("messages");
+    window.onload = function() {
+        connect();
+    };
+    const connect = () => {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected, onError);
+    };
+
+    const onConnected = () => {
+        console.log("connected");
+        console.log(currentUserLogin);
+        stompClient.subscribe(
+            "/dialog/" + currentUserLogin,
+            function (msg){
+                const message = JSON.parse(msg.body);
+                let li = document.createElement("li");
+                let log = message.loginFrom;
+                let text = message.text;
+                li.appendChild(document.createTextNode(log + ": " + text));
+                if(!dialog){
+                  createDialog();
+                }
+                dialog.appendChild(li);
+            }
+        );
+    };
+
+    function createDialog(){
+        let ul = document.createElement("ul");
+        box.appendChild(ul);
+    }
+    
+
+    const onError = (err) => {
+        console.log(err);
+    };
+
+    function sendMessage() {
+        if(stompClient == null) connect();
+        const ms = document.getElementById("message").value;
+        const message = {
+            text: ms,
+            loginTo: chatMember,
+            loginFrom: currentUserLogin,
+            date: new Date(),
+        };
+        stompClient.send("/app/dialog", {}, JSON.stringify(message));
+        if (currentUserLogin !== chatMember){
+            let li = document.createElement("li");
+            li.appendChild(document.createTextNode(currentUserLogin + ": " + ms));
+            dialog.appendChild(li);
+        }
+        document.getElementById("message").value = '';
+    }
+</script>
+</html>

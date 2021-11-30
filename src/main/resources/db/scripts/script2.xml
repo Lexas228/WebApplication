@@ -22,6 +22,35 @@
         <addForeignKeyConstraint baseTableName="people_information" baseColumnNames="image_id" constraintName="fk_image_id" referencedTableName="images"
                                  referencedColumnNames="id"/>
     </changeSet>
+    <changeSet id="3" author="Dmitryi">
+        <addColumn tableName="people_information">
+            <column name="last_action" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="4" author="Dmitryi">
+        <validCheckSum>8:8125a81785646f19d81b8bb8cef34b25</validCheckSum>
+        <createTable tableName="dialog">
+            <column name="id" type="bigserial"/>
+            <column name="first_person_id" type="bigint">
+                <constraints nullable="false" referencedTableName="people" referencedColumnNames="id" foreignKeyName="fk_first_person_id"/>
+            </column>
+            <column name="second_person_id" type="bigint">
+                <constraints nullable="false" referencedTableName="people" referencedColumnNames="id" foreignKeyName="fk_second_person_id"/>
+            </column>
+        </createTable>
+        <createTable tableName="message">
+            <column name="id" type="bigserial"/>
+            <column name="person_id" type="bigint">
+                <constraints nullable="false" referencedTableName="people" referencedColumnNames="id" foreignKeyName="fk_person_id"/>
+            </column>
+            <column name="text" type="text"/>
+            <column name="date" type="timestamp"/>
+            <column name="dialog_id" type="bigint">
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
 

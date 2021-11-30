@@ -67,6 +67,11 @@
             <th>Birthday:</th>
             <td th:text="${personInformation.getBirthday()}"></td>
         </tr>
+
+        <tr>
+            <th>Last action on site:</th>
+            <td th:text="${personInformation.getLastAction()}"></td>
+        </tr>
         </tbody>
     </table>
     <div th:if="${canShow}">
@@ -85,6 +90,9 @@
     </form>
     <form th:method="GET" th:action="@{/people/{login}/file/json(login=${login})}">
         <button class="btn btn-lg btn-primary" type="submit" value="Download json">Download in json</button>
+    </form>
+    <form th:method="GET" th:action="@{/dialog/{login}(login=${login})}">
+        <button class="btn btn-lg btn-primary" type="submit" value="To dialog">To dialog</button>
     </form>
 </div>
 
