@@ -2,9 +2,8 @@ package ru.shishlov.btf.components.convertors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.shishlov.btf.components.images.ImageConvertorBoss;
+import ru.shishlov.btf.components.convertors.images.ImageConvertorBoss;
 import ru.shishlov.btf.dto.PersonDto;
-import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 
@@ -19,15 +18,23 @@ public class PersonConvertor {
     public PersonConvertor(ImageConvertorBoss imageConvertorBoss){
         this.imageConvertorBoss = imageConvertorBoss;
     }
+
     public PersonEntity toPersonEntity(PersonDto personDto){
         PersonEntity personEntity = null;
         if(personDto != null) {
             personEntity = new PersonEntity();
             personEntity.setLogin(personDto.getLogin());
-            PersonInformationEntity personInformationEntity = toPersonInformationEntity(personDto.getPersonInformation());
+            PersonInformationEntity personInformationEntity = new PersonInformationEntity();
             personInformationEntity.setPerson(personEntity);
             personEntity.setPersonInformation(personInformationEntity);
             personEntity.setPassword(personDto.getPassword());
+            personInformationEntity.setInformation(personDto.getInformation());
+            personInformationEntity.setName(personDto.getName());
+            personInformationEntity.setSurname(personDto.getSurname());
+            personInformationEntity.setAddress(personDto.getAddress());
+            personInformationEntity.setBirthday(personDto.getBirthday());
+            personInformationEntity.setLastAction(personDto.getLastAction());
+         //   personInformationEntity.setImage(imageConvertorBoss.toImageEntity(personDto.getImage()));
         }
         return personEntity;
     }
@@ -37,39 +44,26 @@ public class PersonConvertor {
         if(personEntity != null) {
             personDto = new PersonDto();
             personDto.setLogin(personEntity.getLogin());
-            personDto.setPersonInformation(toPersonInformationDto(personEntity.getPersonInformation()));
-            personDto.setPassword(personEntity.getPassword());
+            personDto.setPassword("secret");
+            PersonInformationEntity personInformation = personEntity.getPersonInformation();
+            personDto.setName(personInformation.getName());
+            personDto.setSurname(personInformation.getSurname());
+            personDto.setAddress(personInformation.getAddress());
+          //  personDto.setImage(imageConvertorBoss.toImageDto(personInformation.getImage()));
+            personDto.setBirthday(personInformation.getBirthday());
+            personDto.setLastAction(personInformation.getLastAction());
+            personDto.setInformation(personInformation.getInformation());
+
         }
         return personDto;
     }
 
-    public PersonInformationDto toPersonInformationDto(PersonInformationEntity personInformationEntity){
-        PersonInformationDto personInformationDto = null;
-        if(personInformationEntity != null) {
-            personInformationDto = new PersonInformationDto();
-            personInformationDto.setName(personInformationEntity.getName());
-            personInformationDto.setSurname(personInformationEntity.getSurname());
-            personInformationDto.setInformation(personInformationEntity.getInformation());
-            personInformationDto.setAddress(personInformationEntity.getAddress());
-            personInformationDto.setBirthday(personInformationEntity.getBirthday());
-            personInformationDto.setImage(imageConvertorBoss.toImageDto(personInformationEntity.getImage()));
-            personInformationDto.setLastAction(personInformationEntity.getLastAction());
-        }
-        return personInformationDto;
+    public void update(PersonInformationEntity informationEntity, PersonDto personDto){
+        informationEntity.setInformation(personDto.getInformation());
+      //  informationEntity.setImage(imageConvertorBoss.toImageEntity(personDto.getImage()));
+        informationEntity.setName(personDto.getName());
+        informationEntity.setSurname(personDto.getSurname());
+        informationEntity.setBirthday(personDto.getBirthday());
+        informationEntity.setAddress(personDto.getAddress());
     }
-
-    public PersonInformationEntity toPersonInformationEntity(PersonInformationDto personInformationDto){
-        PersonInformationEntity personInformationEntity = null;
-        if(personInformationDto != null) {
-            personInformationEntity = new PersonInformationEntity();
-            personInformationEntity.setName(personInformationDto.getName());
-            personInformationEntity.setSurname(personInformationDto.getSurname());
-            personInformationEntity.setInformation(personInformationDto.getInformation());
-            personInformationEntity.setAddress(personInformationDto.getAddress());
-            personInformationEntity.setBirthday(personInformationDto.getBirthday());
-            personInformationEntity.setLastAction(personInformationDto.getLastAction());
-        }
-        return personInformationEntity;
-    }
-
 }

@@ -17,13 +17,12 @@ public class DialogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "first_person_id")
-    private PersonEntity firstPerson;
+    @ManyToMany
+    @JoinTable(name = "person_dialogs",
+    joinColumns = @JoinColumn(name = "dialog_id"),
+    inverseJoinColumns = @JoinColumn(name = "person_id"))
+    private List<PersonEntity> personEntities;
 
-    @OneToOne
-    @JoinColumn(name = "second_person_id")
-    private PersonEntity secondPerson;
-
-
+    @OneToMany(mappedBy = "dialog")
+    private List<MessageEntity> messageEntities;
 }

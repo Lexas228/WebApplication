@@ -1,5 +1,4 @@
-package ru.shishlov.btf.components.images;
-import org.springframework.beans.factory.annotation.Autowired;
+package ru.shishlov.btf.components.convertors.images;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

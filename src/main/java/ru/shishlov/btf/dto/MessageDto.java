@@ -6,8 +6,7 @@ import java.sql.Timestamp;
 
 @Data
 public class MessageDto {
+    private Long dialogId;
     private String text;
-    private String loginTo;
     private String loginFrom;
-    private Timestamp date;
 }

@@ -1,7 +1,6 @@
 package ru.shishlov.btf.services;
 
 
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shishlov.btf.components.convertors.PersonConvertor;
 import ru.shishlov.btf.dto.PersonDto;
-import ru.shishlov.btf.dto.PersonInformationDto;
 import ru.shishlov.btf.entities.Image;
 import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
@@ -28,7 +26,6 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Transactional
 public class PeopleService implements UserDetailsService{
     private final PeopleRepository peopleRepository;
     private final PeopleInformationRepository peopleInformationRepository;
@@ -54,31 +51,19 @@ public class PeopleService implements UserDetailsService{
         this.validator = validator;
     }
 
-    public void updateInfo(PersonInformationDto personInformation, String login){
+    public void updateInfo(PersonDto personDto, String login){
        PersonInformationEntity old = peopleInformationRepository.findByPersonLogin(login);
-       old.setAddress(personInformation.getAddress());
-       old.setBirthday(personInformation.getBirthday());
-       old.setInformation(personInformation.getInformation());
-       old.setName(personInformation.getName());
-       old.setSurname(personInformation.getSurname());
-       if(!personInformation.getImage().isEmpty()){
-            imageService.update(personInformation.getImage(), old.getImage().getId());
-       }
+       personConvertor.update(old, personDto);
        peopleInformationRepository.save(old);
     }
 
-    public PersonInformationDto findInfoByLogin(String login){
-        return personConvertor.toPersonInformationDto(peopleInformationRepository.findByPersonLogin(login));
-    }
-
     public void save(PersonDto person){
-        person.setPassword(passwordEncoder.encode(person.getPassword()));
-        person.getPersonInformation().setLastAction(new Date());
-        PersonEntity entity = personConvertor.toPersonEntity(person);
-        PersonInformationEntity pers = entity.getPersonInformation();
-        Image image = imageService.save(person.getPersonInformation().getImage(), person.getLogin());
-        pers.setImage(image);
-        peopleRepository.save(entity);
+        PersonEntity pers = personConvertor.toPersonEntity(person);
+        pers.setPassword(passwordEncoder.encode(person.getPassword()));
+        pers.getPersonInformation().setLastAction(new Date());
+        //Image image = imageService.save(person.getImage(), person.getLogin());
+      //  pers.getPersonInformation().setImage(image);
+        peopleRepository.save(pers);
     }
 
     @Transactional
@@ -128,16 +113,5 @@ public class PeopleService implements UserDetailsService{
     public boolean isAvailableLogin(String login){
         return !peopleRepository.existsByLogin(login);
     }
-
-    public boolean isAvailableToSave(PersonDto person){
-        var l = validator.validate(person);
-        if(l.isEmpty()){
-            return isAvailableLogin(person.getLogin());
-        }
-        return false;
-    }
-
-
-
 
 }

@@ -12,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.shishlov.btf.components.PersonParser;
 import ru.shishlov.btf.controller.PeopleController;
 import ru.shishlov.btf.dto.*;
 import ru.shishlov.btf.services.PeopleService;
@@ -33,8 +32,6 @@ public class AuthorizationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private PersonParser personParser;
 
     @Autowired
     private PeopleController peopleController;
@@ -52,14 +49,9 @@ public class AuthorizationControllerTest {
 
     }
 
-    @Before
-    public void setUp() throws ParseException {
-        personDto = PeopleServiceTest.createUser();
-    }
 
     @Test
     public void failsWhenDifferentPasswordsGiven() throws Exception {
-        personDto.setConfirmPassword("lala");
         this.mockMvc.perform(MockMvcRequestBuilderUtils.postForm("/people/new", personDto)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(print())

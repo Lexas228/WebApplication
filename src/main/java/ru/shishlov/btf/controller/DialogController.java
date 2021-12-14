@@ -1,17 +1,16 @@
 package ru.shishlov.btf.controller;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import ru.shishlov.btf.dto.MessageDto;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.web.bind.annotation.*;
+import ru.shishlov.btf.dto.DialogDto;
 import ru.shishlov.btf.services.DialogService;
 
-
 import java.security.Principal;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/dialog")
+@CrossOrigin
 public class DialogController {
     private final DialogService dialogService;
 
@@ -19,20 +18,19 @@ public class DialogController {
         this.dialogService = dialogService;
     }
 
-    @GetMapping("dialog/{login}")
-    public String getMyMessagesWith(@PathVariable String login, Principal principal, Model model){
-        model.addAttribute("messages", dialogService.findAllMessagesBetween(login, principal.getName()));
-        model.addAttribute("with", login);
-        model.addAttribute("who", principal.getName());
-        return "messages/dialog";
+    @PostAuthorize("returnObject.peopleLogins.contains(principal.username)")
+    @GetMapping("/{id}")
+    public DialogDto getDialog(@PathVariable Long id){
+        return dialogService.getDialogById(id);
     }
 
-    @MessageMapping("/dialog")
-    public void sendMessage(MessageDto messageDto){
-        System.out.println("here");
-        dialogService.addMessage(messageDto);
+    @GetMapping
+    public List<DialogDto> getAll(Principal principal){
+        return dialogService.findAllDialogsFor(principal.getName());
     }
 
-
-
+    @PostMapping
+    public DialogDto create(DialogDto dialogDto){
+        return dialogService.create(dialogDto);
+    }
 }

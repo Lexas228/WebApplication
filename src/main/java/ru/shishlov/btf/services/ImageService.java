@@ -2,7 +2,7 @@ package ru.shishlov.btf.services;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.shishlov.btf.components.images.ImageConvertorBoss;
+import ru.shishlov.btf.components.convertors.images.ImageConvertorBoss;
 import ru.shishlov.btf.dto.ImageDto;
 import ru.shishlov.btf.entities.Image;
 import ru.shishlov.btf.repositories.ImageRepository;

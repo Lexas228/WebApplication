@@ -54,7 +54,7 @@ public class ImageRepositoryFS implements ImageRepository{
     /**
      *
      * @param login
-     * Finding files which user with param login has and delete it
+     * Finding files which user param login has and delete it
      */
     @Override
     public void clean(String login) {

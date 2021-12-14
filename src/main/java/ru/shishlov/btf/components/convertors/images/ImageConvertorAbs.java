@@ -1,4 +1,4 @@
-package ru.shishlov.btf.components.images;
+package ru.shishlov.btf.components.convertors.images;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package ru.shishlov.btf.components.images;
+package ru.shishlov.btf.components.convertors.images;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,11 +21,13 @@ public class ImageConvertorBoss implements ImageConvertor{
 
     @Override
     public Image toImageEntity(ImageDto imageDto) {
+        if(imageDto == null) return null;
         return getNeedConvertorForDto(imageDto).toImageEntity(imageDto);
     }
 
     @Override
     public ImageDto toImageDto(Image image) {
+        if(image == null) return null;
         return getNeedConvertorForEntity(image).toImageDto(image);
     }
 

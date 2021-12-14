@@ -1,4 +1,4 @@
-package ru.shishlov.btf.components.images;
+package ru.shishlov.btf.components.convertors.images;
 
 import org.springframework.stereotype.Component;
 import ru.shishlov.btf.dto.ImageDto;

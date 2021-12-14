@@ -18,6 +18,10 @@ public class MessageEntity {
     @Column(name = "id")
     private Long id;
 
+    @ManyToOne()
+    @JoinColumn(name = "dialog_id")
+    private DialogEntity dialog;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "person_id")
     private PersonEntity whose;
@@ -27,8 +31,4 @@ public class MessageEntity {
 
     @Column(name = "date")
     private Timestamp date;
-
-    @ManyToOne
-    @JoinColumn(name = "dialog_id")
-    private DialogEntity dialog;
 }
