@@ -1,0 +1,61 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Dmitryi" id="2">
+        <createTable tableName="image">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="content" type="bytea"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="location" type="varchar(255)"/>
+        </createTable>
+        <addColumn tableName="people_information">
+            <column name="image_id" type="bigint">
+                <constraints referencedTableName="image" referencedColumnNames="id" foreignKeyName="fk_image_id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="3" author="Dmitryi">
+        <addColumn tableName="people_information">
+            <column name="last_action" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="4" author="Dmitryi">
+        <createTable tableName="dialog">
+            <column name="id" type="bigserial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="message">
+            <column name="id" type="bigserial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="dialog_id" type="bigint">
+                <constraints nullable="false" referencedTableName="dialog" referencedColumnNames="id" foreignKeyName="fk_dialog_id"/>
+            </column>
+            <column name="person_id" type="bigint">
+                <constraints nullable="false" referencedTableName="people" referencedColumnNames="id" foreignKeyName="fk_person_id"/>
+            </column>
+            <column name="text" type="text"/>
+            <column name="date" type="timestamp"/>
+        </createTable>
+        <createTable tableName="person_dialogs">
+            <column name="dialog_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_dialog_id" referencedTableName="dialog" referencedColumnNames="id"/>
+            </column>
+            <column name="person_id" type="bigint">
+                <constraints primaryKey="true" referencedTableName="people" referencedColumnNames="id" foreignKeyName="fk_person_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
+
