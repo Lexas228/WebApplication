@@ -1,4 +1,4 @@
-package ru.shishlov.btf.repositories;
+package ru.shishlov.btf.repositories.image;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -14,6 +14,7 @@ import java.util.Optional;
 import static org.apache.tomcat.util.http.fileupload.FileUtils.deleteDirectory;
 
 @Repository
+//saving images in file system and database
 public class ImageRepositoryFS implements ImageRepository{
     private final ImageRepositoryJpa imageRepositoryJpa;
     @Value(value = "${images.path}")

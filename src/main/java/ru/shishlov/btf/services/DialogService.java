@@ -1,23 +1,19 @@
 package ru.shishlov.btf.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shishlov.btf.components.convertors.DialogConvertor;
-import ru.shishlov.btf.components.convertors.MessageConvertor;
 import ru.shishlov.btf.dto.DialogDto;
-import ru.shishlov.btf.dto.MessageDto;
 import ru.shishlov.btf.entities.DialogEntity;
-import ru.shishlov.btf.entities.MessageEntity;
 import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.repositories.DialogRepository;
 import ru.shishlov.btf.repositories.PeopleRepository;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +21,6 @@ public class DialogService {
     private final DialogRepository dialogRepository;
     private final PeopleRepository peopleRepository;
     private DialogConvertor dialogConvertor;
-    private MessageConvertor messageConvertor;
-    private SimpMessagingTemplate messagingTemplate;
 
 
     @Autowired
@@ -37,38 +31,41 @@ public class DialogService {
 
     public List<DialogDto> findAllDialogsFor(String login){
         return dialogRepository.findAllByPersonLogin(login).stream()
-                .map(dialogEntity -> dialogConvertor.toDialogDto(dialogEntity)).collect(Collectors.toList());
-    }
-
-    public DialogDto getDialogById(Long id){
-        return dialogConvertor.toDialogDto(dialogRepository.getById(id));
-    }
-
-    public DialogDto create(DialogDto dialogDto){
-        dialogDto.setId(null);
-        DialogEntity entity = dialogConvertor.toDialogEntity(dialogDto);
-        dialogRepository.save(entity);
-        dialogDto.setId(entity.getId());
-        return dialogDto;
+                .map(dialogEntity -> dialogConvertor.toDialogDto(dialogEntity, login)).collect(Collectors.toList());
     }
 
     @Transactional
-    public void addMessage(MessageDto messageDto){
-      dialogRepository.getById(messageDto.getDialogId()).getMessageEntities().add(messageConvertor.toMessageEntity(messageDto));
+    public DialogDto getDialogById(Long id, String userLogin){
+        return dialogConvertor.toDialogDto(dialogRepository.getById(id), userLogin);
     }
 
-    private void sentMessage(MessageDto messageDto){
+    @Transactional
+    public DialogDto create(DialogDto dialogDto, String userLogin){
+        DialogEntity dialogEntity = new DialogEntity();
+        Optional<PersonEntity> one = peopleRepository.findByLogin(dialogDto.getWithWhom());
+        Optional<PersonEntity> two = peopleRepository.findByLogin(userLogin);
+        if(one.isPresent() && two.isPresent()){
+            Optional<DialogEntity> dig = dialogRepository.findDialogBetween(dialogDto.getWithWhom(), userLogin);
+            if(dig.isPresent()){
+                return dialogConvertor.toDialogDto(dig.get(), userLogin);
+            }
+            Set<PersonEntity> personEntities = new HashSet<>();
+            personEntities.add(one.get());
+            personEntities.add(two.get());
+            dialogEntity.setPersons(personEntities);
+            dialogRepository.save(dialogEntity);
+        }
+        dialogDto.setId(dialogEntity.getId());
+        return dialogDto;
     }
 
-    private void sentDialog(DialogEntity dialogEntity, String to){
-        DialogDto dialogDto = new DialogDto();
-        messagingTemplate.convertAndSend("/dialog/"+to, dialogDto);
+
+    private DialogEntity getDialogBetween(String loginOne, String loginTwo){
+        return dialogRepository.findDialogBetween(loginOne, loginTwo).orElse(null);
     }
 
-
-    @Autowired
-    public void setMessagingTemplate(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    public void delete(DialogDto dialogDto){
+        dialogRepository.deleteById(dialogDto.getId());
     }
 
     @Autowired
@@ -76,10 +73,15 @@ public class DialogService {
         this.dialogConvertor = dialogConvertor;
     }
 
-    @Autowired
-    public void setMessageConvertor(MessageConvertor messageConvertor) {
-        this.messageConvertor = messageConvertor;
+    public boolean containUserInDialog(Long dialogId, String username){
+        return dialogRepository.containsByDialogIdAndPersonLogin(dialogId, username).isPresent();
     }
+
+    public boolean delete(Long id){
+        dialogRepository.deleteById(id);
+        return true;
+    }
+
 
 
 }

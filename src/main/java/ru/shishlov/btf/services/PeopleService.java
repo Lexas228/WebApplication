@@ -10,14 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shishlov.btf.components.convertors.PersonConvertor;
-import ru.shishlov.btf.dto.PersonDto;
+import ru.shishlov.btf.dto.RequestPersonDto;
+import ru.shishlov.btf.dto.ResponsePersonDto;
 import ru.shishlov.btf.entities.Image;
 import ru.shishlov.btf.entities.PersonEntity;
 import ru.shishlov.btf.entities.PersonInformationEntity;
 import ru.shishlov.btf.repositories.PeopleInformationRepository;
 import ru.shishlov.btf.repositories.PeopleRepository;
 
-import javax.validation.Validator;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,7 +32,6 @@ public class PeopleService implements UserDetailsService{
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
     private final PersonConvertor personConvertor;
-    private Validator validator;
 
 
 
@@ -46,23 +45,18 @@ public class PeopleService implements UserDetailsService{
         this.imageService = imageService;
     }
 
-    @Autowired
-    public void setValidator(Validator validator) {
-        this.validator = validator;
-    }
-
-    public void updateInfo(PersonDto personDto, String login){
+    public void updateInfo(RequestPersonDto requestPersonDto, String login){
        PersonInformationEntity old = peopleInformationRepository.findByPersonLogin(login);
-       personConvertor.update(old, personDto);
+       personConvertor.update(old, requestPersonDto);
        peopleInformationRepository.save(old);
     }
 
-    public void save(PersonDto person){
+    public void save(RequestPersonDto person){
         PersonEntity pers = personConvertor.toPersonEntity(person);
         pers.setPassword(passwordEncoder.encode(person.getPassword()));
         pers.getPersonInformation().setLastAction(new Date());
-        //Image image = imageService.save(person.getImage(), person.getLogin());
-      //  pers.getPersonInformation().setImage(image);
+        Image image = imageService.save(person.getImage(), person.getLogin());
+        pers.getPersonInformation().setImage(image);
         peopleRepository.save(pers);
     }
 
@@ -72,13 +66,14 @@ public class PeopleService implements UserDetailsService{
         peopleInformationRepository.findByPersonLogin(login).setLastAction(new Date());
     }
 
-    public Collection<PersonDto> getAll(){
-        return peopleRepository.findAll().stream().map(personConvertor::toPersonDto).collect(Collectors.toList());
+    @Transactional
+    public Collection<ResponsePersonDto> getAll(){
+        return peopleRepository.findAll().stream().map(personConvertor::toResponsePersonDto).collect(Collectors.toList());
     }
 
-    public PersonDto findByLogin(String login){
+    public ResponsePersonDto findByLogin(String login){
         Optional<PersonEntity> pe = peopleRepository.findByLogin(login);
-        return pe.map(personConvertor::toPersonDto).orElse(null);
+        return pe.map(personConvertor::toResponsePersonDto).orElse(null);
     }
 
     public void delete(String login){
@@ -89,14 +84,14 @@ public class PeopleService implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<PersonEntity> person = peopleRepository.findByLogin(s);
-        if(!person.isPresent()){
+        if(person.isEmpty()){
             throw new UsernameNotFoundException("User " + s + " was not found");
         }
         PersonEntity ps = person.get();
         return new User(ps.getLogin(), ps.getPassword(), new HashSet<>());
     }
 
-    public String getPasswordByLogin(String login){
+    private String getPasswordByLogin(String login){
         Optional<PersonEntity> pe = peopleRepository.findByLogin(login);
         return pe.map(PersonEntity::getPassword).orElse(null);
     }

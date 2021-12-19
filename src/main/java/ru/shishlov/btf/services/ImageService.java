@@ -2,11 +2,12 @@ package ru.shishlov.btf.services;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.components.convertors.images.ImageConvertorBoss;
-import ru.shishlov.btf.dto.ImageDto;
 import ru.shishlov.btf.entities.Image;
-import ru.shishlov.btf.repositories.ImageRepository;
+import ru.shishlov.btf.repositories.image.ImageRepository;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -24,19 +25,25 @@ public class ImageService {
         this.repository = repository;
     }
 
-    public Image save(ImageDto dto, String login){
-        Image im = imageConvertorBoss.toImageEntity(dto);
-        repository.save(im, login);
+    public Image save(MultipartFile file, String login){
+        Image im = imageConvertorBoss.toImageEntity(file);
+        if(im != null) {
+            repository.save(im, login);
+        }
         return im;
     }
 
-    public void update(ImageDto dto, Long id){
+    public void update(MultipartFile file, Long id){
         Optional<Image> image = repository.findById(id);
         if(image.isPresent()) {
-            Image im = image.get();
-            im.setContent(dto.getBytes());
-            im.setName(dto.getName());
-            repository.update(im);
+            try {
+                Image im = image.get();
+                im.setContent(file.getBytes());
+                im.setName(file.getName());
+                repository.update(im);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

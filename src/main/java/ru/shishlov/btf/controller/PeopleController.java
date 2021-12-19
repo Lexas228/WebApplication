@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.shishlov.btf.components.security.ValidLogin;
 import ru.shishlov.btf.dto.PasswordDto;
-import ru.shishlov.btf.dto.PersonDto;
+import ru.shishlov.btf.dto.RequestPersonDto;
+import ru.shishlov.btf.dto.ResponsePersonDto;
 import ru.shishlov.btf.services.PeopleService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -25,20 +26,20 @@ public class PeopleController {
     }
 
     @GetMapping()
-    public Collection<PersonDto> all() {
+    public Collection<ResponsePersonDto> all() {
         return peopleService.getAll();
     }
 
-    @PreAuthorize("principal != null && #login.equals(principal.username)")
+    @PreAuthorize("@validLogin.check(#login, authentication)")
     @PutMapping("/{login}")
-    public ResponseEntity<String> edit(@Valid PersonDto person,
+    public ResponseEntity<String> edit(@RequestBody @Valid RequestPersonDto person,
                                        @PathVariable(name = "login") String login) {
         peopleService.updateInfo(person, login);
         return ResponseEntity.ok("Was updated");
     }
 
     @PostMapping()
-    public ResponseEntity<String> create(@Valid @ModelAttribute PersonDto persondto) {
+    public ResponseEntity<String> create(@RequestBody @Valid RequestPersonDto persondto) {
         if(!peopleService.isAvailableLogin(persondto.getLogin())){
             return ResponseEntity.badRequest().body("Login is busy");
         }
@@ -46,7 +47,7 @@ public class PeopleController {
         return ResponseEntity.ok("User was created");
     }
 
-    @PreAuthorize("principal != null && #login.equals(principal.username)")
+    @PreAuthorize("@validLogin.check(#login, authentication)")
     @PutMapping("/password/{login}")
     public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordDto passwordDto, @PathVariable String login) {
         if (peopleService.isCorrectPassword(login, passwordDto.getUserOldPassword())) {
@@ -58,11 +59,11 @@ public class PeopleController {
 
 
     @GetMapping("/{login}")
-    public PersonDto getPerson(@PathVariable String login) {
+    public ResponsePersonDto getPerson(@PathVariable String login) {
         return peopleService.findByLogin(login);
     }
 
-    @PreAuthorize("principal != null && #login.equals(principal.username)")
+    @PreAuthorize("@validLogin.check(#login, authentication)")
     @DeleteMapping("/{login}")
     public ResponseEntity<String> deletePerson(@PathVariable("login") String login) {
         peopleService.delete(login);
