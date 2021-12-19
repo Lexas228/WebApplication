@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import ru.shishlov.btf.components.JwtTokenHelper;
 import ru.shishlov.btf.filter.CustomAuthenticationFilter;
 import ru.shishlov.btf.filter.CustomAuthorizationFilter;
 import ru.shishlov.btf.services.PeopleService;
@@ -44,14 +45,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), jwtTokenHelper()))
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/people/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/people/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomAuthorizationFilter(jwtTokenHelper()), UsernamePasswordAuthenticationFilter.class);
         http.cors();
 
     }
@@ -73,6 +75,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public JwtTokenHelper jwtTokenHelper(){
+        return new JwtTokenHelper();
     }
 
 /*    @Bean

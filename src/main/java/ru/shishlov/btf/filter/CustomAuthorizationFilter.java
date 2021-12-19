@@ -3,11 +3,14 @@ package ru.shishlov.btf.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.shishlov.btf.components.JwtTokenHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,6 +23,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+
+    private final JwtTokenHelper jwtTokenHelper;
+    public CustomAuthorizationFilter(JwtTokenHelper jwtTokenHelper){
+        this.jwtTokenHelper = jwtTokenHelper;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,8 +44,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, null, new HashSet<>());
                     SecurityContextHolder.getContext().setAuthentication(token);
                     filterChain.doFilter(request, response);
-                }catch (Exception e){
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }catch (TokenExpiredException e){
+                   response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 }
             }else{
                 filterChain.doFilter(request, response);
