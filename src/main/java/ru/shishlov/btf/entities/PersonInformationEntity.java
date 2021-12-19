@@ -11,10 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "people_information")
-public class PersonInformationEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class PersonInformationEntity extends BasicEntity{
 
     @Column(name = "name")
     private String name;
@@ -36,8 +33,8 @@ public class PersonInformationEntity {
     @JoinColumn(name = "person_id", nullable = false)
     private PersonEntity person;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "image_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "image_id")
     private Image image;
 
     @Temporal(TemporalType.DATE)

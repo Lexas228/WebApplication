@@ -1,9 +1,7 @@
 package ru.shishlov.btf.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.components.validators.FieldMatch;
 
@@ -15,8 +13,7 @@ import java.util.Date;
 @Data
 @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 @XmlRootElement
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class PersonDto {
+public class RequestPersonDto {
 
     @Size(min = 2, max = 100)
     private String login;
@@ -41,6 +38,4 @@ public class PersonDto {
     private String address;
 
     private MultipartFile image;
-
-    private Date lastAction;
 }

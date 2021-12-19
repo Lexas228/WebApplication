@@ -2,11 +2,10 @@ package ru.shishlov.btf.entities;
 
 
 import lombok.*;
-import ru.shishlov.btf.components.validators.FieldMatch;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -17,11 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Entity
 @Table(name = "people")
-public class PersonEntity {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id")
-    private long id;
+public class PersonEntity extends BasicEntity{
 
     @Column(name = "login")
     private String login;
@@ -31,5 +26,8 @@ public class PersonEntity {
 
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
     private PersonInformationEntity personInformation;
+
+    @ManyToMany(mappedBy = "persons", cascade = CascadeType.REMOVE)
+    private List<DialogEntity> dialogs;
 
 }

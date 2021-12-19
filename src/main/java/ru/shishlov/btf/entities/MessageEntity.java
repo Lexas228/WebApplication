@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -12,11 +11,7 @@ import java.util.Date;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "message")
-public class MessageEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class MessageEntity extends BasicEntity{
 
     @ManyToOne()
     @JoinColumn(name = "dialog_id")

@@ -4,7 +4,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.shishlov.btf.dto.ImageDto;
 import ru.shishlov.btf.entities.Image;
 
 import java.io.File;
@@ -21,13 +20,11 @@ public class ImageConvertorFS extends ImageConvertorAbs {
      */
 
     @Override
-    public ImageDto toImageDto(Image image) {
+    public byte[] toByteArray(Image image) {
         File fileItem = new File(image.getLocation());
         try {
             FileInputStream input = new FileInputStream(fileItem);
-            MultipartFile mf =  new MockMultipartFile(image.getName(),
-                    fileItem.getName(), "image/png", IOUtils.toByteArray(input));
-            return new ImageDto(mf);
+            return  IOUtils.toByteArray(input);
         } catch (IOException e) {
             e.printStackTrace();
         }

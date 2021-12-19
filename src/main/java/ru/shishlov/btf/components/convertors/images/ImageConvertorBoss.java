@@ -2,7 +2,7 @@ package ru.shishlov.btf.components.convertors.images;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.shishlov.btf.dto.ImageDto;
+import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.entities.Image;
 
 /**
@@ -20,18 +20,18 @@ public class ImageConvertorBoss implements ImageConvertor{
     }
 
     @Override
-    public Image toImageEntity(ImageDto imageDto) {
-        if(imageDto == null) return null;
-        return getNeedConvertorForDto(imageDto).toImageEntity(imageDto);
+    public Image toImageEntity(MultipartFile image) {
+        if(image == null) return null;
+        return getNeedConvertorForDto(image).toImageEntity(image);
     }
 
     @Override
-    public ImageDto toImageDto(Image image) {
-        if(image == null) return null;
-        return getNeedConvertorForEntity(image).toImageDto(image);
+    public byte[] toByteArray(Image image) {
+        if (image==null) return new byte[]{};
+        return getNeedConvertorForEntity(image).toByteArray(image);
     }
 
-    private ImageConvertor getNeedConvertorForDto(ImageDto image){
+    private ImageConvertor getNeedConvertorForDto(MultipartFile image){
         return imageConvertorDB;//not important in our case
     }
 

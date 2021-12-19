@@ -1,23 +1,17 @@
 package ru.shishlov.btf.entities;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "images")
-public class Image {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
+@Table(name = "image")
+public class Image extends BasicEntity{
 
     @Lob
     @Type(type="org.hibernate.type.BinaryType")
