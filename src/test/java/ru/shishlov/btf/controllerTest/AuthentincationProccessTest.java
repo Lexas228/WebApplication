@@ -10,7 +10,7 @@ import ru.shishlov.btf.dto.RequestPersonDto;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -52,7 +52,8 @@ public abstract class AuthentincationProccessTest extends AbstractControllerTest
                 .param("password", password)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
         int status = mvcc.getResponse().getStatus();
-        assertEquals(200, status);
+        assertNotNull(mvcc.getResponse().getContentAsString());
+        assertFalse(mvcc.getResponse().getContentAsString().isEmpty());
         Map m = mapFromJson(mvcc.getResponse().getContentAsString(), Map.class);
         return (String) m.get("token");
     }
