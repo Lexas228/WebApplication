@@ -1,3 +1,9 @@
-C:\Users\d.shishlov\IdeaProjects\WebApplication\src\test\java\ru\shishlov\btf\AuthorizationControllerTest.java
-C:\Users\d.shishlov\IdeaProjects\WebApplication\src\test\java\ru\shishlov\btf\serviceTest\PeopleServiceTest.java
-C:\Users\d.shishlov\IdeaProjects\WebApplication\src\test\java\ru\shishlov\btf\repoTest\PeopleRepositoryTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/controllerTest/DialogControllerTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/serviceTest/PeopleServiceTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/serviceTest/DialogServiceTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/controllerTest/PeopleControllerTestWithAuth.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/serviceTest/MessageServiceTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/controllerTest/AuthentincationProccessTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/controllerTest/AbstractControllerTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/controllerTest/PeopleControllerTest.java
+/home/limon/IdeaProjects/WebApplication/src/test/java/ru/shishlov/btf/controllerTest/MessageControllerTest.java

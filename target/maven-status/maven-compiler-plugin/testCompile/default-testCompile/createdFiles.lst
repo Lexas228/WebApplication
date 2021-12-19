@@ -1,3 +1,11 @@
-ru\shishlov\btf\serviceTest\PeopleServiceTest.class
-ru\shishlov\btf\repoTest\PeopleRepositoryTest.class
-ru\shishlov\btf\AuthorizationControllerTest.class
+ru/shishlov/btf/controllerTest/MessageControllerTest.class
+ru/shishlov/btf/serviceTest/PeopleServiceTest.class
+ru/shishlov/btf/controllerTest/AuthentincationProccessTest.class
+ru/shishlov/btf/serviceTest/DialogServiceTest.class
+ru/shishlov/btf/controllerTest/MessageControllerTest$2.class
+ru/shishlov/btf/controllerTest/AbstractControllerTest.class
+ru/shishlov/btf/controllerTest/PeopleControllerTest.class
+ru/shishlov/btf/controllerTest/MessageControllerTest$1.class
+ru/shishlov/btf/controllerTest/DialogControllerTest.class
+ru/shishlov/btf/serviceTest/MessageServiceTest.class
+ru/shishlov/btf/controllerTest/PeopleControllerTestWithAuth.class
