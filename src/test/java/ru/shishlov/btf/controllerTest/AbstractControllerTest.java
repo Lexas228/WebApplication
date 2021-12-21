@@ -50,6 +50,7 @@ public abstract class AbstractControllerTest {
         RequestPersonDto per = new RequestPersonDto();
         per.setLogin(name);
         per.setPassword("123");
+        per.setConfirmPassword("123");
         per.setInformation("lala");
         per.setName("dima");
         per.setSurname("shishlov");
@@ -62,12 +63,9 @@ public abstract class AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString();
+        System.out.println(content);
         assertEquals(200, status);
-        assertEquals(content, "User was created");
+        assertEquals(content, "Success");
         return per;
-    }
-
-    protected void deleteUser(String login){
-
     }
 }

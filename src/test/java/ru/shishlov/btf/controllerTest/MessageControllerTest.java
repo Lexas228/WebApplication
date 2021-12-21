@@ -1,5 +1,6 @@
 package ru.shishlov.btf.controllerTest;
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -35,6 +36,9 @@ public class MessageControllerTest extends DialogControllerTest{
 
    protected BlockingQueue<MessageDto> blockingQueue;
    protected WebSocketStompClient stompClient;
+
+
+
 
 
     @Override
