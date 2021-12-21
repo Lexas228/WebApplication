@@ -39,19 +39,6 @@ public class ImageRepositoryFS implements ImageRepository{
         }
     }
 
-    @Override
-    public void update(Image image) {
-        Path p = Paths.get(image.getLocation());
-        try {
-            if(Files.exists(p))
-            Files.write(p, image.getContent());
-            image.setContent(null);
-            imageRepositoryJpa.save(image);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      *
      * @param login

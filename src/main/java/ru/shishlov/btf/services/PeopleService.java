@@ -51,19 +51,21 @@ public class PeopleService implements UserDetailsService{
        peopleInformationRepository.save(old);
     }
 
-    public void save(RequestPersonDto person){
+    public ResponsePersonDto save(RequestPersonDto person){
         PersonEntity pers = personConvertor.toPersonEntity(person);
         pers.setPassword(passwordEncoder.encode(person.getPassword()));
         pers.getPersonInformation().setLastAction(new Date());
-        Image image = imageService.save(person.getImage(), person.getLogin());
-        pers.getPersonInformation().setImage(image);
         peopleRepository.save(pers);
+        return personConvertor.toResponsePersonDto(pers);
     }
 
     @Transactional
     public void updateLastAction(String login){
        // peopleInformationRepository.updateLastAction(new java.sql.Date(new Date().getTime()), login);
-        peopleInformationRepository.findByPersonLogin(login).setLastAction(new Date());
+        PersonInformationEntity p = peopleInformationRepository.findByPersonLogin(login);
+        if(p != null){
+            p.setLastAction(new java.sql.Date(new Date().getTime()));
+        }
     }
 
     @Transactional

@@ -1,17 +1,22 @@
 package ru.shishlov.btf.controller;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.shishlov.btf.components.security.ValidLogin;
 import ru.shishlov.btf.dto.PasswordDto;
 import ru.shishlov.btf.dto.RequestPersonDto;
 import ru.shishlov.btf.dto.ResponsePersonDto;
+import ru.shishlov.btf.services.ImageService;
 import ru.shishlov.btf.services.PeopleService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Map;
 
 
 @RestController
@@ -19,10 +24,12 @@ import java.util.Collection;
 @CrossOrigin
 public class PeopleController {
     private final PeopleService peopleService;
+    private final ImageService imageService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService) {
+    public PeopleController(PeopleService peopleService, ImageService imageService) {
         this.peopleService = peopleService;
+        this.imageService = imageService;
     }
 
     @GetMapping()
@@ -44,17 +51,24 @@ public class PeopleController {
             return ResponseEntity.badRequest().body("Login is busy");
         }
         peopleService.save(persondto);
-        return ResponseEntity.ok("User was created");
+        return ResponseEntity.ok("Success");
     }
 
     @PreAuthorize("@validLogin.check(#login, authentication)")
-    @PutMapping("/password/{login}")
+    @PutMapping("/{login}/password")
     public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordDto passwordDto, @PathVariable String login) {
         if (peopleService.isCorrectPassword(login, passwordDto.getUserOldPassword())) {
             peopleService.changePassword(login, passwordDto.getNewPassword());
             return ResponseEntity.ok("Password was changed");
         }
         return ResponseEntity.badRequest().body("Old password is incorrect");
+    }
+
+    @PreAuthorize("@validLogin.check(#login, authentication)")
+    @PutMapping("/{login}/image")
+    public ResponseEntity<String> updateImage(@Valid @RequestParam MultipartFile file, @PathVariable String login) {
+            imageService.save(file, login);
+        return ResponseEntity.badRequest().body("Image is changed");
     }
 
 

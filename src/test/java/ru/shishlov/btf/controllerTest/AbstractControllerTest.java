@@ -57,6 +57,7 @@ public abstract class AbstractControllerTest {
         per.setAddress("kaka");
 
         String inputJson = mapToJson(per);
+        System.out.println(inputJson);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
         int status = mvcResult.getResponse().getStatus();

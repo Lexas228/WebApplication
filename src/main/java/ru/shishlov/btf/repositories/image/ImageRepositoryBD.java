@@ -21,11 +21,6 @@ public class ImageRepositoryBD implements ImageRepository{
     }
 
     @Override
-    public void update(Image image) {
-        imageRepositoryJpa.save(image);
-    }
-
-    @Override
     public void clean(String login) {
         //We don't have anything except data in bd which we have already deleted to this moment
         //So we do anything here

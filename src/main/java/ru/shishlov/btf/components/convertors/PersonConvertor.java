@@ -34,7 +34,6 @@ public class PersonConvertor {
             personInformationEntity.setSurname(requestPersonDto.getSurname());
             personInformationEntity.setAddress(requestPersonDto.getAddress());
             personInformationEntity.setBirthday(requestPersonDto.getBirthday());
-            personInformationEntity.setImage(imageConvertorBoss.toImageEntity(requestPersonDto.getImage()));
         }
         return personEntity;
     }

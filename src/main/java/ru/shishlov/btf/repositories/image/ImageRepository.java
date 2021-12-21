@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface ImageRepository {
     void save(Image image, String login);
     void clean(String login);
-    void update(Image image);
     Optional<Image> findById(long id);
 
 

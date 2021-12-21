@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new CustomAuthorizationFilter(jwtTokenHelper()), UsernamePasswordAuthenticationFilter.class);
         http.cors();
+        http.headers().frameOptions().disable();
 
     }
 

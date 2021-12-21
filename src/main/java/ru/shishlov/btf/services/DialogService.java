@@ -45,7 +45,7 @@ public class DialogService {
         Optional<PersonEntity> one = peopleRepository.findByLogin(dialogDto.getWithWhom());
         Optional<PersonEntity> two = peopleRepository.findByLogin(userLogin);
         if(one.isPresent() && two.isPresent()){
-            Optional<DialogEntity> dig = dialogRepository.findDialogBetween(dialogDto.getWithWhom(), userLogin);
+            Optional<DialogEntity> dig = dialogRepository.findDialogByTwoLogin(dialogDto.getWithWhom(), userLogin);
             if(dig.isPresent()){
                 return dialogConvertor.toDialogDto(dig.get(), userLogin);
             }
@@ -59,10 +59,6 @@ public class DialogService {
         return dialogDto;
     }
 
-
-    private DialogEntity getDialogBetween(String loginOne, String loginTwo){
-        return dialogRepository.findDialogBetween(loginOne, loginTwo).orElse(null);
-    }
 
     public void delete(DialogDto dialogDto){
         dialogRepository.deleteById(dialogDto.getId());
